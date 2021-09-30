@@ -10,6 +10,7 @@ const newick = "(LngfishAu:0.1712138893,(LngfishSA:0.1885373538,LngfishAf:0.1650
   return (
    <PhylotreeApplication
    newick={newick}
+   
    />
 
   );

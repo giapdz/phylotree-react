@@ -178,6 +178,7 @@ class PhylotreeApplication extends Component {
       reroot:null,
       internal: false,
       newick: props.newick,
+      support: props.support,
       nodeName:'',
       showlabel: true,
     };
@@ -329,41 +330,76 @@ class PhylotreeApplication extends Component {
       />
     </form>
         
-        <div >
-          
+        <div class="row align-items-start" style={{width: 470}} >
+        {
+          (this.state.support.split('/')[0]) ?
+          (<div class="col">
           <input
             type='checkbox'
             onChange={()=>this.setState({value1: !this.state.value1})}
-            style={{marginInline: 5}}
+            style={{marginRight: 5}}
           />
-          {this.state.value1 ? 'Hide' : 'Show' } support value 1
+           <text>{this.state.value1 ? 'Hide' : 'Show' } {this.state.support.split('/')[0]}</text>
+           </div>
+          )
+          : null
+        }
+          
+          
+          {
+          (this.state.support.split('/')[1]) ?
+          (<div class="col">
           <input
             type='checkbox'
             onChange={()=>this.setState({value2: !this.state.value2})}
-            style={{marginInline: 5}}
+            style={{marginRight: 5}}
           />
-          {this.state.value2 ? 'Hide' : 'Show' } support value 2
+           <text>{this.state.value2 ? 'Hide' : 'Show' } {this.state.support.split('/')[1]}</text>
+           </div>
+          )
+          : null
+        }
+            {
+          (this.state.support.split('/')[2]) ?
+          (<div class="col">
           <input
             type='checkbox'
             onChange={()=>this.setState({value3: !this.state.value3})}
-            style={{marginInline: 5}}
+            style={{marginRight: 5}}
           />
-          {this.state.showValue3 ? 'Hide' : 'Show' } support value 3
-          </div>
-          <div>
+           <text>{this.state.value3 ? 'Hide' : 'Show' } {this.state.support.split('/')[2]}</text>
+           </div>
+          )
+          : null
+        }
+        
           
+        {
+          (this.state.support.split('/')[3]) ?
+          (<div class="col">
           <input
             type='checkbox'
-            onChange={()=>this.setState({value4: !this.state.value4})}
-            style={{marginInline: 5}}
+            onChange={()=>this.setState({value4: !this.state.value2})}
+            style={{marginRight: 5}}
           />
-          {this.state.value4 ? 'Hide' : 'Show' } support value 4
+           <text>{this.state.value4 ? 'Hide' : 'Show' } {this.state.support.split('/')[3]}</text>
+           </div>
+          )
+          : null
+        }
+             {
+          (this.state.support.split('/')[4]) ?
+          (<div class="col">
           <input
             type='checkbox'
             onChange={()=>this.setState({value5: !this.state.value5})}
-            style={{marginInline: 5}}
+            style={{marginRight: 5}}
           />
-          {this.state.value5 ? 'Hide' : 'Show' } support value 5
+           <text>{this.state.value5 ? 'Hide' : 'Show' } {this.state.support.split('/')[4]}</text>
+           </div>
+          )
+          : null
+        }
         </div>
         
         </div>
@@ -395,7 +431,8 @@ class PhylotreeApplication extends Component {
 PhylotreeApplication.defaultProps = {
   padding: 100,
   height: 600,
-  width: 600
+  width: 600,
+  support: "value 1/value 2/value 3/value 4/value 5"
 };
 
 export default PhylotreeApplication;
