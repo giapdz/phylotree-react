@@ -9,7 +9,7 @@ function SVG(props) {
         new_props = {
     width: width - 2 * padding,
     height: height - 2 * padding,
-    transform: `translate(${padding}, ${padding})`
+    transform: `translate(${padding}, ${0})`
   };
   return React.createElement("svg", {
     width: width,
