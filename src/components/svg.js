@@ -14,6 +14,7 @@ function SVG(props) {
   return React.createElement("svg", {
     width: width,
     height: height,
+    id: "svg-chart",
     style: {
       borderStyle: props.borderStyle,
       borderWidth: props.borderWidth,
@@ -23,12 +24,9 @@ function SVG(props) {
 }
 
 SVG.defaultProps = {
-  width: 500,
-  height: 500,
-  padding: 20,
+  padding: 50,
   margin: 20,
-  borderStyle: "solid",
-  borderWidth: 1,
-  borderColor: "lightgrey"
+  borderColor: "lightgrey",
+  id: "svg-chart"
 };
 export default SVG;

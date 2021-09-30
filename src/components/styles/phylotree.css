@@ -3,16 +3,24 @@ path.rp-branch {
   fill: none;
   shape-rendering: crispEdges;
 }
+.rp-branch:hover {
+  stroke-width: 8px;
+}
 
 text.rp-label {
   font-family: Courier;
-  font-size: 14px;
-  transition: all .5s;
+  font-size: 12px;
 }
-
-.rp-branch-tracer {
+/* circle {
   stroke: black;
-  /* stroke-dasharray: 3,4; */
   stroke-width: 0.5px;
 }
-
+circle:hover {
+  stroke: black;
+  stroke-width: 4px;
+} */
+.rp-branch-tracer {
+  stroke: black;
+  stroke-dasharray: 3,4;
+  stroke-width: 0.5px;
+}

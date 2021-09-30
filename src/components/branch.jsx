@@ -1,17 +1,17 @@
 import React from "react";
-
 import { line } from "d3-shape";
-
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./styles/phylotree.css"
 
 function Branch(props) {
 
-  const { xScale, yScale, colorScale, showLabel, setTooltip } = props,
+  const { xScale, yScale, colorScale, showLabel, setTooltip, showAttribute,tree, setIsOpen, showValue1, showValue2, showValue3, showValue4, showValue5} = props,
     { source, target } = props.link,
     source_x = xScale(source.data.abstract_x),
     source_y = yScale(source.data.abstract_y),
     target_x = xScale(target.data.abstract_x),
     target_y = yScale(target.data.abstract_y),
-    tracer_x2 = props.alignTips == "right" ?
+    tracer_x2 = props.alignTips === "right" ?
       props.width - (target.data.text_width || 0) :
       target_x,
     data = [
@@ -32,25 +32,45 @@ function Branch(props) {
     ),
     label_style = target.data.name && props.labelStyler ?
       props.labelStyler(target.data) :
-      {} ;
-  return (<g className="node"
+      {};
+   if(tree.isLeafNode(target)) {   
+  return (
+  <g className="node"
   >
     <path
       className="rp-branch"
       fill="none"
       d={branch_line(data)}
       {...all_branch_styles}
+      
       onMouseMove={props.tooltip ? e => {
         setTooltip({
           x: e.nativeEvent.offsetX,
           y: e.nativeEvent.offsetY,
           data: target.data
-        });
+        })
       } : undefined}
       onMouseOut={props.tooltip ? e => {
         setTooltip(false);
       } : undefined}
+      onClick={props.isOpen ? (e)=>{
+        setIsOpen({
+          left: e.nativeEvent.offsetX,
+          top: e.nativeEvent.offsetY,
+          position: 'absolute',
+          display: 'block',
+          node: target
+        })
+
+      } : undefined }
     />
+    {showAttribute ? <text
+      x={source_x+(target_x-source_x)/2-20}
+      y={target_y-8}
+      textAnchor="start"
+      alignmentBaseline="middle"
+      className="rp-label"
+    >{parseFloat(target.data.attribute).toFixed(4)}</text> : null }
     {showLabel ? <line
       x1={target_x}
       x2={tracer_x2}
@@ -66,7 +86,427 @@ function Branch(props) {
       {...Object.assign({}, props.labelStyle, label_style)}
       className="rp-label"
     >{target.data.name.slice(0, props.maxLabelWidth)}</text> : null}
-  </g>);
+  </g>
+  
+);
+    }
+    else { 
+      return(
+      <g class ="internal-node" >
+        <path
+      className="rp-branch"
+      fill="none"
+      d={branch_line(data)}
+      {...all_branch_styles}
+
+      onMouseMove={props.tooltip ? e => {
+        setTooltip({
+          x: e.nativeEvent.offsetX,
+          y: e.nativeEvent.offsetY,
+          data: target.data
+        });
+      } : undefined}
+      onMouseOut={props.tooltip ? e => {
+        setTooltip(false);
+      } : undefined}
+      onClick={ (e)=>{
+        setIsOpen({
+          left: e.nativeEvent.offsetX,
+          top: e.nativeEvent.offsetY,
+          position: 'absolute',
+          display: 'block',
+          node: target
+        })
+      } }
+    />
+    {showAttribute ? <text
+      x={source_x+(target_x-source_x)/2-20}
+      y={target_y-8}
+      textAnchor="start"
+      alignmentBaseline="middle"
+      className="rp-label"
+    >{target.data.attribute==0 ? '' : parseFloat(target.data.attribute).toFixed(4)}</text> : null }
+    {(()=>{ 
+      if(target.data.name==='__reroot_top_clade') {
+        return null
+      }
+      else {
+      if ((!showValue5 && !showValue2 && !showValue3 && !showValue4) && showValue1) {return (<text
+     x={source_x+(target_x-source_x)/2-13}
+     y={target_y+10}
+     textAnchor="start"
+     alignmentBaseline="middle"
+     className="rp-label"
+     >
+    {target.data.name.split("/")[0]}</text> )
+     }
+      if((!showValue5 && !showValue1 && !showValue3 && !showValue4) && showValue2) {
+       return (
+        <text
+     x={source_x+(target_x-source_x)/2-13}
+     y={target_y+10}
+     textAnchor="start"
+     alignmentBaseline="middle"
+     className="rp-label"
+     >
+    {target.data.name.split("/")[1]}</text> 
+       )
+     }
+     
+    if((!showValue1 && !showValue2 && !showValue4 && !showValue5) && showValue3) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-10}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[2]}</text> 
+      )
+    }
+    if((!showValue1 && !showValue2 && !showValue3 && !showValue5) && showValue4) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-10}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[3]}</text> 
+      )
+    }
+    if((!showValue1 && !showValue2 && !showValue3 && !showValue4) && showValue5) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-8}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[4]}</text> 
+      )
+    }
+    if((showValue1 && showValue2) && !(showValue3 || showValue4 || showValue5)) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-28}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[0]}/{target.data.name.split("/")[1]}</text> 
+      )
+    }
+    if((showValue1 && showValue3) && !(showValue2|| showValue4 || showValue5)) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-28}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[0]}/{target.data.name.split("/")[2]}</text> 
+      )
+    }
+    if((showValue1 && showValue4) && !(showValue2 || showValue3 || showValue5)) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-28}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[0]}/{target.data.name.split("/")[3]}</text> 
+      )
+    }
+    if((showValue1 && showValue5) && !(showValue3 || showValue4 || showValue2)) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-28}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[0]}/{target.data.name.split("/")[4]}</text> 
+      )
+    }
+    if((showValue2 && showValue3) && !(showValue1 || showValue4 || showValue5)) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-28}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[1]}/{target.data.name.split("/")[2]}</text> 
+      )
+    }
+    if((showValue2 && showValue4) && !(showValue3 || showValue1 || showValue5)) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-28}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[1]}/{target.data.name.split("/")[3]}</text> 
+      )
+    }
+    if((showValue2 && showValue5) && !(showValue3 || showValue4 || showValue1)) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-28}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[1]}/{target.data.name.split("/")[4]}</text> 
+      )
+    }
+    if((showValue3 && showValue4) && !(showValue1 || showValue2 || showValue5)) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-20}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[2]}/{target.data.name.split("/")[3]}</text> 
+      )
+    }
+    if((showValue3 && showValue5) && !(showValue1 || showValue2 || showValue4)) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-20}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[2]}/{target.data.name.split("/")[4]}</text> 
+      )
+    }
+    if((showValue4 && showValue5) && !(showValue1 || showValue2 || showValue3)) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-20}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[3]}/{target.data.name.split("/")[4]}</text> 
+      )
+    }
+    if((showValue1 && showValue2 && showValue3) && !(showValue4 || showValue5)) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-38}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[0]}/{target.data.name.split("/")[1]}/{target.data.name.split("/")[2]}</text> 
+      )
+    }
+    if((showValue1 && showValue2 && showValue4) && !(showValue3 || showValue5)) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-38}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[0]}/{target.data.name.split("/")[1]}/{target.data.name.split("/")[3]}</text> 
+      )
+    }
+    if((showValue1 && showValue2 && showValue5) && !(showValue3 || showValue4)) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-38}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[0]}/{target.data.name.split("/")[1]}/{target.data.name.split("/")[4]}</text> 
+      )
+    }
+    if((showValue1 && showValue3 && showValue4) && !(showValue2 || showValue5)) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-30}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[0]}/{target.data.name.split("/")[2]}/{target.data.name.split("/")[3]}</text> 
+      )
+    }
+    if((showValue1 && showValue3 && showValue5) && !(showValue2 || showValue4)) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-34}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[0]}/{target.data.name.split("/")[2]}/{target.data.name.split("/")[4]}</text> 
+      )
+    }
+    if((showValue1 && showValue4 && showValue5) && !(showValue2 || showValue3)) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-38}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[0]}/{target.data.name.split("/")[3]}/{target.data.name.split("/")[4]}</text> 
+      )
+    }
+    if((showValue2 && showValue3 && showValue4) && !(showValue1 || showValue5)) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-30}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[1]}/{target.data.name.split("/")[2]}/{target.data.name.split("/")[3]}</text> 
+      )
+    }
+    if((showValue2 && showValue3 && showValue5) && !(showValue1 || showValue4)) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-34}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[1]}/{target.data.name.split("/")[2]}/{target.data.name.split("/")[4]}</text> 
+      )
+    }
+    if((showValue2 && showValue4 && showValue5) && !(showValue1 || showValue3)) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-30}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[1]}/{target.data.name.split("/")[3]}/{target.data.name.split("/")[4]}</text> 
+      )
+    }
+    if((showValue3 && showValue4 && showValue5) && !(showValue1 || showValue2)) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-30}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[2]}/{target.data.name.split("/")[3]}/{target.data.name.split("/")[4]}</text> 
+      )
+    }
+    if((showValue1 && showValue2 && showValue3 && showValue4) && !showValue5) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-42}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[0]}/{target.data.name.split("/")[1]}/{target.data.name.split("/")[2]}/{target.data.name.split("/")[3]}</text> 
+      )
+    }
+    if((showValue1 && showValue2 && showValue3 && showValue5) && !showValue4) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-42}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[0]}/{target.data.name.split("/")[1]}/{target.data.name.split("/")[2]}/{target.data.name.split("/")[4]}</text> 
+      )
+    }
+    if((showValue1 && showValue2 && showValue4 && showValue5) && !showValue3) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-42}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[0]}/{target.data.name.split("/")[1]}/{target.data.name.split("/")[3]}/{target.data.name.split("/")[4]}</text> 
+      )
+    }
+    if((showValue1 && showValue3 && showValue4 && showValue5) && !showValue2) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-42}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[0]}/{target.data.name.split("/")[2]}/{target.data.name.split("/")[3]}/{target.data.name.split("/")[4]}</text> 
+      )
+    }
+    if((showValue2 && showValue3 && showValue4 &&showValue5) && !showValue1) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-42}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[1]}/{target.data.name.split("/")[2]}/{target.data.name.split("/")[3]}/{target.data.name.split("/")[4]}</text> 
+      )
+    }
+    if(showValue1 && showValue2 && showValue3 && showValue4 && showValue5) {
+      return (
+       <text
+    x={source_x+(target_x-source_x)/2-48}
+    y={target_y+10}
+    textAnchor="start"
+    alignmentBaseline="middle"
+    className="rp-label"
+    >
+   {target.data.name.split("/")[0]}/{target.data.name.split("/")[1]}/{target.data.name.split("/")[2]}/{target.data.name.split("/")[3]}/{target.data.name.split("/")[4]}</text> 
+      )
+    }
+     else return null;
+  }
+    })()}
+     
+   </g>
+      )}   
 }
 
 Branch.defaultProps = {

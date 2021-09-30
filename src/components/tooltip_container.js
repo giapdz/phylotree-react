@@ -8,7 +8,6 @@ function TooltipContainer(props) {
     tooltip_height,
     x,
     y,
-    data,
     children
   } = props,
         correct_x = x < width / 2 ? x : x - tooltip_width,
