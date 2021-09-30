@@ -111,8 +111,8 @@ function Branch(props) {
       } : undefined}
       onClick={ (e)=>{
         setIsOpen({
-          left: e.nativeEvent.offsetX,
-          top: e.nativeEvent.offsetY,
+          left: e.nativeEvent.offsetX+50,
+          top: e.nativeEvent.offsetY+80,
           position: 'absolute',
           display: 'block',
           node: target
@@ -131,6 +131,9 @@ function Branch(props) {
         return null
       }
       else {
+        if (!target.data.name) {
+          return null 
+          }
       if ((!showValue5 && !showValue2 && !showValue3 && !showValue4) && showValue1) {return (<text
      x={source_x+(target_x-source_x)/2-13}
      y={target_y+10}

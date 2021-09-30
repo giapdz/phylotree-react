@@ -261,8 +261,8 @@ class PhylotreeApplication extends Component {
         >      <a class="dropdown-item" tabindex="-1" onClick={()=> {this.setState({reroot: props.node});
               }}>Reroot on this node</a>
                <div class="dropdown-divider"></div>
-               <a class="dropdown-item">Collapse Subtree</a>
-               <a class="dropdown-item" tabindex="-1">Hide this subtree</a>
+               <a class="dropdown-item">Swap on this subtree</a>
+               <a class="dropdown-item" >Flip on this subtree</a>
              </div> 
              
       )
@@ -379,7 +379,7 @@ class PhylotreeApplication extends Component {
           (<div class="col">
           <input
             type='checkbox'
-            onChange={()=>this.setState({value4: !this.state.value2})}
+            onChange={()=>this.setState({value4: !this.state.value4})}
             style={{marginRight: 5}}
           />
            <text>{this.state.value4 ? 'Hide' : 'Show' } {this.state.support.split('/')[3]}</text>

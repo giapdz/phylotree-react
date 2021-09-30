@@ -187,7 +187,7 @@ function Phylotree(props) {
       let newick2 =tree.reroot(r,1).getNewick()
     
         tree = new phylotree(newick2);
-       
+  
     }
   }
 
