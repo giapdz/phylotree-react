@@ -7,7 +7,7 @@ import { max } from "d3-array";
 
 import Branch from "./branch.jsx";
 import text_width from "./text_width";
-import SVG from "./svg.js";
+import SVG from "./svg";
 
 
 function x_branch_lengths(node, accessor) {
@@ -165,7 +165,7 @@ function Phylotree(props) {
       var r,
       node_child = props.reroot.children,
       node_name = props.reroot.data.name;
-      if(node_name=='__reroot_top_clade') {
+      if(node_name==='__reroot_top_clade') {
        new phylotree(newick)
       }
       else { 

@@ -125,7 +125,7 @@ function Branch(props) {
       textAnchor="start"
       alignmentBaseline="middle"
       className="rp-label"
-    >{target.data.attribute==0 ? '' : parseFloat(target.data.attribute).toFixed(4)}</text> : null }
+    >{target.data.attribute===0 ? '' : parseFloat(target.data.attribute).toFixed(4)}</text> : null }
     {(()=>{ 
       if(target.data.name==='__reroot_top_clade') {
         return null
