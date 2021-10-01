@@ -1,8 +1,19 @@
 {
-  "name": "phylotree-react",
-  "version": "0.1.0",
-  "private": true,
+"name": "phylotree-react",
+"description": "Phylotree with react",
+"author": "GiapHV",
+"keywords": ["react", "phylotree", "phylogenetic"],
+"version": "0.1.0",
+"private": false,
+"main": "dist/index.js",
+"module": "dist/index.js",
+"files": [ "dist", "README.md" ],
+"repository": {
+    "type": "git",
+    "url": "git+https://github.com/giapdz/phylotree-react.git"
+},
   "dependencies": {
+    "@babel/polyfill": "^7.12.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.15",
@@ -25,7 +36,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "rm -rf dist && SET NODE_ENV=production & babel src/lib --out-dir dist --copy-files",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -46,5 +57,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.15.7",
+    "@babel/core": "^7.15.5",
+    "@babel/preset-env": "^7.15.6"
   }
 }
