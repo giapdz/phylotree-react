@@ -5,7 +5,7 @@ import { schemeCategory10 } from "d3-scale-chromatic";
 import _ from "underscore";
 import { max } from "d3-array";
 
-import Branch from "./branch.jsx";
+import Branch from "./branch";
 import text_width from "./text_width";
 import SVG from "./svg";
 

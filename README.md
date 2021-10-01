@@ -5,7 +5,7 @@ Phylotree with react
 ###
 
 _install_
-`yarn add phylotree-react`
+`npm install @giap/phylotree`
 
 ### Examples
 

@@ -1,17 +1,28 @@
 {
-"name": "phylotree-react",
-"description": "Phylotree with react",
-"author": "GiapHV",
-"keywords": ["react", "phylotree", "phylogenetic"],
-"version": "0.1.0",
-"private": false,
-"main": "dist/index.js",
-"module": "dist/index.js",
-"files": [ "dist", "README.md" ],
-"repository": {
+  "name": "@giap/phylotree",
+  "description": "Phylotree with react",
+  "author": "Hoang Van Giap",
+  "keywords": [
+    "react",
+    "phylotree",
+    "phylogenetic"
+  ],
+  "version": "1.0.2",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "repository": {
     "type": "git",
     "url": "git+https://github.com/giapdz/phylotree-react.git"
-},
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
@@ -62,5 +73,9 @@
     "@babel/cli": "^7.15.7",
     "@babel/core": "^7.15.5",
     "@babel/preset-env": "^7.15.6"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/giapdz/phylotree-react/issues"
+  },
+  "homepage": "https://github.com/giapdz/phylotree-react#readme"
 }
