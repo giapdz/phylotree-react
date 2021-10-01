@@ -1,7 +1,5 @@
 # phylotree-react
 
-### Base editor
-
 Phylotree with react
 
 ###
