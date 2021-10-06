@@ -67,96 +67,122 @@ const imageOptions = {
   scale: 5,
   encoderOptions: 1,
   backgroundColor: 'white'
-};
-
-function Button(props) {
-  return /*#__PURE__*/_react.default.createElement(_OverlayTrigger.default, {
-    placement: "top",
-    overlay: /*#__PURE__*/_react.default.createElement(_Tooltip.default, null, props.title)
-  }, /*#__PURE__*/_react.default.createElement(_Button.default, _extends({
-    variant: "secondary"
-  }, props), props.children));
-}
+}; // function Button(props) {
+//   return (<OverlayTrigger
+//     placement="top"
+//     overlay=
+//       {props.title}
+//   >
+//     <RBButton
+//       variant="secondary"
+//       {...props}
+//     >
+//       {props.children}
+//     </RBButton>
+//   </OverlayTrigger>);
+// }
 
 function Reload(props) {
-  return /*#__PURE__*/_react.default.createElement(Button, _extends({
-    style: {
-      fontSize: 10
-    },
-    title: "Reload tree"
+  return /*#__PURE__*/_react.default.createElement(_Button.default, _extends({
+    title: "Reload tree",
+    variant: "secondary"
   }, props), /*#__PURE__*/_react.default.createElement(_reactFontawesome.FontAwesomeIcon, {
     icon: _freeSolidSvgIcons.faRedo,
-    size: "lg"
+    size: "lg",
+    style: {
+      width: 15
+    }
   }));
 }
 
 function HorizontalExpansionButton(props) {
-  return /*#__PURE__*/_react.default.createElement(Button, _extends({
-    style: {
-      fontSize: 10
-    },
-    title: "Expand horizontally"
+  return /*#__PURE__*/_react.default.createElement(_Button.default, _extends({
+    title: "Expand horizontally",
+    variant: "secondary"
   }, props), /*#__PURE__*/_react.default.createElement(_reactFontawesome.FontAwesomeIcon, {
     key: 1,
-    icon: _freeSolidSvgIcons.faArrowLeft
+    icon: _freeSolidSvgIcons.faArrowLeft,
+    style: {
+      width: 10
+    }
   }), /*#__PURE__*/_react.default.createElement(_reactFontawesome.FontAwesomeIcon, {
     key: 2,
-    icon: _freeSolidSvgIcons.faArrowRight
+    icon: _freeSolidSvgIcons.faArrowRight,
+    style: {
+      width: 10
+    }
   }));
 }
 
 function HorizontalCompressionButton(props) {
-  return /*#__PURE__*/_react.default.createElement(Button, _extends({
-    style: {
-      fontSize: 10
-    },
-    title: "Compress horizontally"
+  return /*#__PURE__*/_react.default.createElement(_Button.default, _extends({
+    title: "Compress horizontally",
+    variant: "secondary"
   }, props), /*#__PURE__*/_react.default.createElement(_reactFontawesome.FontAwesomeIcon, {
     key: 1,
-    icon: _freeSolidSvgIcons.faArrowRight
+    icon: _freeSolidSvgIcons.faArrowRight,
+    style: {
+      width: 10
+    }
   }), /*#__PURE__*/_react.default.createElement(_reactFontawesome.FontAwesomeIcon, {
     key: 2,
-    icon: _freeSolidSvgIcons.faArrowLeft
+    icon: _freeSolidSvgIcons.faArrowLeft,
+    style: {
+      width: 10
+    }
   }));
 }
 
 function VerticalExpansionButton(props) {
-  return /*#__PURE__*/_react.default.createElement(Button, _extends({
+  return /*#__PURE__*/_react.default.createElement(_Button.default, _extends({
     style: {
-      fontSize: 10,
       display: "flex",
       flexDirection: "column"
     },
-    title: "Expand vertically"
+    title: "Expand vertically",
+    variant: "secondary"
   }, props), /*#__PURE__*/_react.default.createElement(_reactFontawesome.FontAwesomeIcon, {
     key: 1,
-    icon: _freeSolidSvgIcons.faArrowUp
+    icon: _freeSolidSvgIcons.faArrowUp,
+    style: {
+      width: 10
+    }
   }), /*#__PURE__*/_react.default.createElement(_reactFontawesome.FontAwesomeIcon, {
     key: 2,
-    icon: _freeSolidSvgIcons.faArrowDown
+    icon: _freeSolidSvgIcons.faArrowDown,
+    style: {
+      width: 10
+    }
   }));
 }
 
 function VerticalCompressionButton(props) {
-  return /*#__PURE__*/_react.default.createElement(Button, _extends({
+  return /*#__PURE__*/_react.default.createElement(_Button.default, _extends({
     style: {
-      fontSize: 10,
       display: "flex",
       flexDirection: "column"
     },
-    title: "Compress vertically"
+    title: "Compress vertically",
+    variant: "secondary"
   }, props), /*#__PURE__*/_react.default.createElement(_reactFontawesome.FontAwesomeIcon, {
     key: 1,
-    icon: _freeSolidSvgIcons.faArrowDown
+    icon: _freeSolidSvgIcons.faArrowDown,
+    style: {
+      width: 10
+    }
   }), /*#__PURE__*/_react.default.createElement(_reactFontawesome.FontAwesomeIcon, {
     key: 2,
-    icon: _freeSolidSvgIcons.faArrowUp
+    icon: _freeSolidSvgIcons.faArrowUp,
+    style: {
+      width: 10
+    }
   }));
 }
 
 function AscendingSortButton(props) {
-  return /*#__PURE__*/_react.default.createElement(Button, _extends({
-    title: "Sort in ascending order"
+  return /*#__PURE__*/_react.default.createElement(_Button.default, _extends({
+    title: "Sort in ascending order",
+    variant: "secondary"
   }, props), /*#__PURE__*/_react.default.createElement(_reactFontawesome.FontAwesomeIcon, {
     key: 1,
     icon: _freeSolidSvgIcons.faSortAmountUp,
@@ -165,8 +191,9 @@ function AscendingSortButton(props) {
 }
 
 function DescendingSortButton(props) {
-  return /*#__PURE__*/_react.default.createElement(Button, _extends({
-    title: "Sort in descending order"
+  return /*#__PURE__*/_react.default.createElement(_Button.default, _extends({
+    title: "Sort in descending order",
+    variant: "secondary"
   }, props), /*#__PURE__*/_react.default.createElement(_reactFontawesome.FontAwesomeIcon, {
     key: 1,
     icon: _freeSolidSvgIcons.faSortAmountUp
@@ -174,8 +201,9 @@ function DescendingSortButton(props) {
 }
 
 function AlignTipsRightButton(props) {
-  return /*#__PURE__*/_react.default.createElement(Button, _extends({
-    title: "Align tips to right"
+  return /*#__PURE__*/_react.default.createElement(_Button.default, _extends({
+    title: "Align tips to right",
+    variant: "secondary"
   }, props), /*#__PURE__*/_react.default.createElement(_reactFontawesome.FontAwesomeIcon, {
     key: 1,
     icon: _freeSolidSvgIcons.faAlignRight
@@ -183,8 +211,9 @@ function AlignTipsRightButton(props) {
 }
 
 function AlignTipsLeftButton(props) {
-  return /*#__PURE__*/_react.default.createElement(Button, _extends({
-    title: "Align tips to left"
+  return /*#__PURE__*/_react.default.createElement(_Button.default, _extends({
+    title: "Align tips to left",
+    variant: "secondary"
   }, props), /*#__PURE__*/_react.default.createElement(_reactFontawesome.FontAwesomeIcon, {
     key: 1,
     icon: _freeSolidSvgIcons.faAlignLeft
@@ -192,8 +221,9 @@ function AlignTipsLeftButton(props) {
 }
 
 function DownloadImagetButton(props) {
-  return /*#__PURE__*/_react.default.createElement(Button, _extends({
-    title: "Save image"
+  return /*#__PURE__*/_react.default.createElement(_Button.default, _extends({
+    title: "Save image",
+    variant: "secondary"
   }, props), /*#__PURE__*/_react.default.createElement(_reactFontawesome.FontAwesomeIcon, {
     key: 1,
     icon: _freeSolidSvgIcons.faImage,
@@ -270,7 +300,13 @@ class PhylotreeApplication extends _react.Component {
         class: "dropdown-menu",
         role: "menu",
         style: _objectSpread({}, props)
-      }, "      ", /*#__PURE__*/_react.default.createElement("a", {
+      }, " ", props.nodeC ? /*#__PURE__*/_react.default.createElement("a", {
+        class: "dropdown-item",
+        tabindex: "-1",
+        onClick: () => this.toggleCollapse(props.nodeC)
+      }, this.state.isNodeCollapsed ? 'Expand Subtree' : 'Collapse Subtree') : null, props.nodeC ? /*#__PURE__*/_react.default.createElement("div", {
+        class: "dropdown-divider"
+      }) : null, /*#__PURE__*/_react.default.createElement("a", {
         class: "dropdown-item",
         tabindex: "-1",
         onClick: () => {
@@ -278,13 +314,7 @@ class PhylotreeApplication extends _react.Component {
             reroot: props.node
           });
         }
-      }, "Reroot on this node"), /*#__PURE__*/_react.default.createElement("div", {
-        class: "dropdown-divider"
-      }), /*#__PURE__*/_react.default.createElement("a", {
-        class: "dropdown-item"
-      }, "Swap on this subtree"), /*#__PURE__*/_react.default.createElement("a", {
-        class: "dropdown-item"
-      }, "Flip on this subtree"));
+      }, "Reroot on this node"));
     });
 
     this.state = {
@@ -293,6 +323,7 @@ class PhylotreeApplication extends _react.Component {
       height: _props.height,
       sort: null,
       reroot: null,
+      collapsed: null,
       internal: false,
       newick: _props.newick,
       support: _props.support,
@@ -300,43 +331,27 @@ class PhylotreeApplication extends _react.Component {
       showlabel: true
     };
     this.baseState = this.state;
-  } // useEffect(()=>{
-  //   let l=0;
-  //   for(let i of newick) {
-  //     if(i===",") l++;
-  //   }
-  //   if(l<20) {
-  //   this.setState({height: 640})
-  //   this.setState({width: 640})
-  //   }
-  //   else if(l<50 && l>=20) {
-  //     this.setState({height: l*20})
-  //   this.setState({width: 640})
-  //   }
-  //   else {
-  //     this.setState({height: l*10})
-  //   this.setState({width: l*10})
-  //   }
-  // }) 
-  // let l=0;
-  // for(let i of this.state.newick) {
-  //   if(i===",") l++;
-  // }
-  // if(l<20) {
-  // this.setState({height: 640})
-  // this.setState({width: 640})
-  // }
-  // else if(l<50 && l>=20) {
-  //   this.setState({height: l*20})
-  // this.setState({width: 640})
-  // this.setState({textsize: 6})
-  // }
-  // else {
-  //   this.setState({height: l*10})
-  // this.setState({width: l*10})
-  // this.setState({textsize: 6})
-  // }
+  }
 
+  toggleCollapse(node) {
+    console.log(node);
+
+    if (this.state.collapsed) {
+      this.setState({
+        collapsed: null
+      });
+      this.setState({
+        isNodeCollapsed: false
+      });
+    } else {
+      this.setState({
+        collapsed: node
+      });
+      this.setState({
+        isNodeCollapsed: true
+      });
+    }
+  }
 
   render() {
     const {
@@ -348,12 +363,16 @@ class PhylotreeApplication extends _react.Component {
     } = this.state;
     return /*#__PURE__*/_react.default.createElement("div", {
       class: "container"
-    }, /*#__PURE__*/_react.default.createElement("h1", null, "React Phylotree"), /*#__PURE__*/_react.default.createElement("div", {
+    }, /*#__PURE__*/_react.default.createElement("div", {
       style: {
         display: "inline-block",
         width: 800
       }
-    }, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_ButtonGroup.default, null, /*#__PURE__*/_react.default.createElement(Reload, {
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      style: {
+        marginTop: 20
+      }
+    }, /*#__PURE__*/_react.default.createElement(_ButtonGroup.default, null, /*#__PURE__*/_react.default.createElement(Reload, {
       onClick: () => {
         this.setState(this.baseState);
       }
@@ -373,24 +392,18 @@ class PhylotreeApplication extends _react.Component {
       onClick: () => this.alignTips("left")
     }), /*#__PURE__*/_react.default.createElement(AlignTipsRightButton, {
       onClick: () => this.alignTips("right")
-    }), /*#__PURE__*/_react.default.createElement(Button, {
-      style: {
-        fontSize: 10,
-        width: 40
-      },
+    }), /*#__PURE__*/_react.default.createElement(_Button.default, {
       title: "Toggle the display of taxa names",
+      variant: "secondary",
       onClick: () => this.setState({
         showlabel: !this.state.showlabel
       })
     }, /*#__PURE__*/_react.default.createElement("img", {
       src: _show_label.default,
       width: "18"
-    })), /*#__PURE__*/_react.default.createElement(Button, {
-      style: {
-        fontSize: 10,
-        width: 40
-      },
+    })), /*#__PURE__*/_react.default.createElement(_Button.default, {
       title: "Toggle the display of branch lengths",
+      variant: "secondary",
       onClick: () => this.setState({
         attribute: !this.state.attribute
       })
@@ -477,6 +490,7 @@ class PhylotreeApplication extends _react.Component {
       alignTips: this.state.alignTips,
       sort: this.state.sort,
       reroot: this.state.reroot,
+      collapsed: this.state.collapsed,
       showAttributes: this.state.attribute,
       showLabels: this.state.showlabel,
       showValue1: this.state.value1,

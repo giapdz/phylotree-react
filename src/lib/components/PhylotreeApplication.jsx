@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import RBButton from "react-bootstrap/Button";
+import Button from 'react-bootstrap/Button'
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
@@ -22,73 +23,75 @@ const imageOptions = {
   backgroundColor: 'white',
 }
 
-function Button(props) {
-  return (<OverlayTrigger
-    placement="top"
-    overlay={<Tooltip>
-      {props.title}
-    </Tooltip>}
-  >
-    <RBButton
-      variant="secondary"
-      {...props}
-    >
-      {props.children}
-    </RBButton>
-  </OverlayTrigger>);
-}
+// function Button(props) {
+//   return (<OverlayTrigger
+//     placement="top"
+//     overlay=
+//       {props.title}
+
+//   >
+//     <RBButton
+//       variant="secondary"
+//       {...props}
+//     >
+//       {props.children}
+//     </RBButton>
+//   </OverlayTrigger>);
+// }
 function Reload(props) {
   return (
     <Button
-    style={{fontSize: 10}}
     title="Reload tree"
+    variant="secondary"
     {...props}
     >
-      <FontAwesomeIcon icon={faRedo} size="lg" />
+      <FontAwesomeIcon icon={faRedo} size="lg" style={{width:15}}/>
     </Button>
   )
 }
 function HorizontalExpansionButton(props) {
   return (<Button
-    style={{ fontSize: 10 }}
     title="Expand horizontally"
+    variant="secondary"
     {...props}
   >
-    <FontAwesomeIcon key={1} icon={faArrowLeft} />
-    <FontAwesomeIcon key={2} icon={faArrowRight} />
+    <FontAwesomeIcon key={1} icon={faArrowLeft} style={{width:10}}/>
+    <FontAwesomeIcon key={2} icon={faArrowRight} style={{width:10}}/>
   </Button>);
 }
 
 function HorizontalCompressionButton(props) {
   return (<Button
-    style={{ fontSize: 10 }}
     title="Compress horizontally"
+    variant="secondary"
     {...props}
   >
-    <FontAwesomeIcon key={1} icon={faArrowRight} />
-    <FontAwesomeIcon key={2} icon={faArrowLeft} />
+    <FontAwesomeIcon key={1} icon={faArrowRight} style={{width:10}} />
+    <FontAwesomeIcon key={2} icon={faArrowLeft} style={{width:10}}/>
   </Button>);
 }
 
 function VerticalExpansionButton(props) {
   return (<Button
-    style={{fontSize: 10, display: "flex", flexDirection: "column"}}
+    style={{ display: "flex", flexDirection: "column"}}
     title="Expand vertically"
+    variant="secondary"
     {...props}
   >
-    <FontAwesomeIcon key={1} icon={faArrowUp} />
-    <FontAwesomeIcon key={2} icon={faArrowDown} />
+    <FontAwesomeIcon key={1} icon={faArrowUp} style={{width:10}}/>
+    <FontAwesomeIcon key={2} icon={faArrowDown} style={{width:10}}/>
   </Button>);
 }
 
 function VerticalCompressionButton(props) {
   return (<Button
-    style={{fontSize: 10, display: "flex", flexDirection: "column"}}
+    style={{display: "flex", flexDirection: "column"}}
     title="Compress vertically"
+    variant="secondary"
     {...props}
   >
-    <FontAwesomeIcon key={1} icon={faArrowDown} />
-    <FontAwesomeIcon key={2} icon={faArrowUp} />
+    <FontAwesomeIcon key={1} icon={faArrowDown} style={{width:10}}/>
+    <FontAwesomeIcon key={2} icon={faArrowUp} style={{width:10}}/>
   </Button>);
 }
 
@@ -96,6 +99,7 @@ function VerticalCompressionButton(props) {
 function AscendingSortButton(props) {
   return (<Button
     title="Sort in ascending order"
+    variant="secondary"
     {...props}
   >
     <FontAwesomeIcon key={1} icon={faSortAmountUp} flip="vertical"/>
@@ -106,6 +110,7 @@ function AscendingSortButton(props) {
 function DescendingSortButton(props) {
   return (<Button
     title="Sort in descending order"
+    variant="secondary"
     {...props}
   >
     <FontAwesomeIcon key={1} icon={faSortAmountUp}/>
@@ -116,6 +121,7 @@ function DescendingSortButton(props) {
 function AlignTipsRightButton(props) {
   return (<Button
     title="Align tips to right"
+    variant="secondary"
     {...props}
   >
     <FontAwesomeIcon key={1} icon={faAlignRight}/>
@@ -126,6 +132,8 @@ function AlignTipsRightButton(props) {
 function AlignTipsLeftButton(props) {
   return (<Button
     title="Align tips to left"
+    variant="secondary"
+    
     {...props}
   >
     <FontAwesomeIcon key={1} icon={faAlignLeft}/>
@@ -134,6 +142,7 @@ function AlignTipsLeftButton(props) {
 function DownloadImagetButton(props) {
   return (<Button
     title="Save image"
+    variant="secondary"
     {...props}
   >
     <FontAwesomeIcon key={1} icon={faImage} flip="vertical"/>
@@ -206,9 +215,11 @@ class PhylotreeApplication extends Component {
     
   }
   toggleCollapse(node) {
+    console.log(node)
     if (this.state.collapsed) {
       this.setState({collapsed: null})
       this.setState({isNodeCollapsed: false})
+      
     } else {
       this.setState({collapsed: node})
       this.setState({isNodeCollapsed: true})
@@ -232,9 +243,9 @@ class PhylotreeApplication extends Component {
       return ( 
         <div class="dropdown-menu" role="menu"
         style= {{...props}}
-        >    <a class="dropdown-item" tabindex="-1" onClick={()=> this.toggleCollapse(props.nodeC)}
-        >{this.state.isNodeCollapsed ?'Expand Subtree' : 'Collapse Subtree'}</a>  
-             <div class="dropdown-divider"></div>
+        > {props.nodeC ? <a class="dropdown-item" tabindex="-1" onClick={()=> this.toggleCollapse(props.nodeC)}
+        >{this.state.isNodeCollapsed ?'Expand Subtree' : 'Collapse Subtree'}</a> : null }
+             {props.nodeC ? <div class="dropdown-divider"></div>: null}
               <a class="dropdown-item" tabindex="-1" onClick={()=> {this.setState({reroot: props.node});
               }}>Reroot on this node</a>
                
@@ -247,7 +258,7 @@ class PhylotreeApplication extends Component {
     const { width, height } = this.state;
     return (<div class="container" >
       <div style={{display: "inline-block",  width:800}} >
-        <div>
+        <div style={{marginTop: 20}}>
         <ButtonGroup >
           <Reload
           onClick={() => {
@@ -278,15 +289,17 @@ class PhylotreeApplication extends Component {
             onClick={()=>this.alignTips("right")}
           />
           <Button
-          style={{fontSize: 10, width: 40}}
+        
           title="Toggle the display of taxa names"
+          variant="secondary"
           onClick={()=>this.setState({showlabel: !this.state.showlabel})}
           >
           <img src={showLabel} width= "18" />
           </Button>
           <Button
-          style={{fontSize: 10, width:40}}
+          
           title="Toggle the display of branch lengths"
+          variant="secondary"
           onClick={()=>this.setState({attribute: !this.state.attribute})}
           >
           <img src={showLength} width= "20" />

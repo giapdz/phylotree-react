@@ -100,8 +100,8 @@ function Branch(props) {
       } : undefined}
       onClick={props.isOpen ? (e)=>{
         setIsOpen({
-          left: e.nativeEvent.offsetX,
-          top: e.nativeEvent.offsetY,
+          left: e.nativeEvent.offsetX+120,
+          top: e.nativeEvent.offsetY+120,
           position: 'absolute',
           display: 'block',
           node: target
