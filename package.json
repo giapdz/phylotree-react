@@ -7,7 +7,7 @@
     "phylotree",
     "phylogenetic"
   ],
-  "version": "1.0.7",
+  "version": "1.0.9",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "files": [

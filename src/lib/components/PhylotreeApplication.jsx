@@ -1,7 +1,4 @@
 import React, {Component} from "react";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import Tooltip from "react-bootstrap/Tooltip";
-import RBButton from "react-bootstrap/Button";
 import Button from 'react-bootstrap/Button'
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -73,25 +70,25 @@ function HorizontalCompressionButton(props) {
 
 function VerticalExpansionButton(props) {
   return (<Button
-    style={{ display: "flex", flexDirection: "column"}}
+    style={{ fontSize: 11.5,display: "flex", flexDirection: "column"}}
     title="Expand vertically"
     variant="secondary"
     {...props}
   >
-    <FontAwesomeIcon key={1} icon={faArrowUp} style={{width:10}}/>
-    <FontAwesomeIcon key={2} icon={faArrowDown} style={{width:10}}/>
+    <FontAwesomeIcon key={1} icon={faArrowUp} />
+    <FontAwesomeIcon key={2} icon={faArrowDown} />
   </Button>);
 }
 
 function VerticalCompressionButton(props) {
   return (<Button
-    style={{display: "flex", flexDirection: "column"}}
+    style={{fontSize: 11.5,display: "flex", flexDirection: "column"}}
     title="Compress vertically"
     variant="secondary"
     {...props}
   >
-    <FontAwesomeIcon key={1} icon={faArrowDown} style={{width:10}}/>
-    <FontAwesomeIcon key={2} icon={faArrowUp} style={{width:10}}/>
+    <FontAwesomeIcon key={1} icon={faArrowDown} />
+    <FontAwesomeIcon key={2} icon={faArrowUp}/>
   </Button>);
 }
 

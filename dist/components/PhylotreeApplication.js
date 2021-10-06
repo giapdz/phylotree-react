@@ -23,10 +23,6 @@ require("core-js/modules/es.object.assign.js");
 
 var _react = _interopRequireWildcard(require("react"));
 
-var _OverlayTrigger = _interopRequireDefault(require("react-bootstrap/OverlayTrigger"));
-
-var _Tooltip = _interopRequireDefault(require("react-bootstrap/Tooltip"));
-
 var _Button = _interopRequireDefault(require("react-bootstrap/Button"));
 
 var _ButtonGroup = _interopRequireDefault(require("react-bootstrap/ButtonGroup"));
@@ -136,6 +132,7 @@ function HorizontalCompressionButton(props) {
 function VerticalExpansionButton(props) {
   return /*#__PURE__*/_react.default.createElement(_Button.default, _extends({
     style: {
+      fontSize: 11.5,
       display: "flex",
       flexDirection: "column"
     },
@@ -143,22 +140,17 @@ function VerticalExpansionButton(props) {
     variant: "secondary"
   }, props), /*#__PURE__*/_react.default.createElement(_reactFontawesome.FontAwesomeIcon, {
     key: 1,
-    icon: _freeSolidSvgIcons.faArrowUp,
-    style: {
-      width: 10
-    }
+    icon: _freeSolidSvgIcons.faArrowUp
   }), /*#__PURE__*/_react.default.createElement(_reactFontawesome.FontAwesomeIcon, {
     key: 2,
-    icon: _freeSolidSvgIcons.faArrowDown,
-    style: {
-      width: 10
-    }
+    icon: _freeSolidSvgIcons.faArrowDown
   }));
 }
 
 function VerticalCompressionButton(props) {
   return /*#__PURE__*/_react.default.createElement(_Button.default, _extends({
     style: {
+      fontSize: 11.5,
       display: "flex",
       flexDirection: "column"
     },
@@ -166,16 +158,10 @@ function VerticalCompressionButton(props) {
     variant: "secondary"
   }, props), /*#__PURE__*/_react.default.createElement(_reactFontawesome.FontAwesomeIcon, {
     key: 1,
-    icon: _freeSolidSvgIcons.faArrowDown,
-    style: {
-      width: 10
-    }
+    icon: _freeSolidSvgIcons.faArrowDown
   }), /*#__PURE__*/_react.default.createElement(_reactFontawesome.FontAwesomeIcon, {
     key: 2,
-    icon: _freeSolidSvgIcons.faArrowUp,
-    style: {
-      width: 10
-    }
+    icon: _freeSolidSvgIcons.faArrowUp
   }));
 }
 
