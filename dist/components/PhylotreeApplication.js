@@ -132,7 +132,7 @@ function HorizontalCompressionButton(props) {
 function VerticalExpansionButton(props) {
   return /*#__PURE__*/_react.default.createElement(_Button.default, _extends({
     style: {
-      fontSize: 11.5,
+      fontSize: 12,
       display: "flex",
       flexDirection: "column"
     },
@@ -150,7 +150,7 @@ function VerticalExpansionButton(props) {
 function VerticalCompressionButton(props) {
   return /*#__PURE__*/_react.default.createElement(_Button.default, _extends({
     style: {
-      fontSize: 11.5,
+      fontSize: 12,
       display: "flex",
       flexDirection: "column"
     },

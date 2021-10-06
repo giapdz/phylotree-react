@@ -70,7 +70,7 @@ function HorizontalCompressionButton(props) {
 
 function VerticalExpansionButton(props) {
   return (<Button
-    style={{ fontSize: 11.5,display: "flex", flexDirection: "column"}}
+    style={{ fontSize: 12,display: "flex", flexDirection: "column"}}
     title="Expand vertically"
     variant="secondary"
     {...props}
@@ -82,7 +82,7 @@ function VerticalExpansionButton(props) {
 
 function VerticalCompressionButton(props) {
   return (<Button
-    style={{fontSize: 11.5,display: "flex", flexDirection: "column"}}
+    style={{fontSize: 12,display: "flex", flexDirection: "column"}}
     title="Compress vertically"
     variant="secondary"
     {...props}
