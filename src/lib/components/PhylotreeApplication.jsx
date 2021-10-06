@@ -166,7 +166,6 @@ function TooltipContents(props) {
   </TooltipContainer>) ;
 }
 
-
 class PhylotreeApplication extends Component {
   constructor(props) {
     super(props);
@@ -176,6 +175,7 @@ class PhylotreeApplication extends Component {
       height: props.height,
       sort: null,
       reroot:null,
+      collapsed:null,
       internal: false,
       newick: props.newick,
       support: props.support,
@@ -185,44 +185,7 @@ class PhylotreeApplication extends Component {
     this.baseState = this.state;
     
   }
-  // useEffect(()=>{
-  //   let l=0;
-  //   for(let i of newick) {
-  //     if(i===",") l++;
-  //   }
-  //   if(l<20) {
-  //   this.setState({height: 640})
-  //   this.setState({width: 640})
-  //   }
-  //   else if(l<50 && l>=20) {
-  //     this.setState({height: l*20})
-  //   this.setState({width: 640})
-    
-  //   }
-  //   else {
-  //     this.setState({height: l*10})
-  //   this.setState({width: l*10})
-    
-  //   }
-  // }) 
-    // let l=0;
-    // for(let i of this.state.newick) {
-    //   if(i===",") l++;
-    // }
-    // if(l<20) {
-    // this.setState({height: 640})
-    // this.setState({width: 640})
-    // }
-    // else if(l<50 && l>=20) {
-    //   this.setState({height: l*20})
-    // this.setState({width: 640})
-    // this.setState({textsize: 6})
-    // }
-    // else {
-    //   this.setState({height: l*10})
-    // this.setState({width: l*10})
-    // this.setState({textsize: 6})
-    // }
+ 
   
   toggleDimension =(dimension, direction) => {
     const new_dimension = this.state[dimension] +
@@ -242,6 +205,16 @@ class PhylotreeApplication extends Component {
     this.setState({nodeName: event.target.value});
     
   }
+  toggleCollapse(node) {
+    if (this.state.collapsed) {
+      this.setState({collapsed: null})
+      this.setState({isNodeCollapsed: false})
+    } else {
+      this.setState({collapsed: node})
+      this.setState({isNodeCollapsed: true})
+    }
+  
+  }
   
  labelStyler =(branch) => {
       var rx = new RegExp (this.state.nodeName,"i");
@@ -255,14 +228,16 @@ class PhylotreeApplication extends Component {
       saveSvgAsPng.saveSvgAsPng(document.getElementById('svg-chart'), 'shapes.png', imageOptions);
     }
    openDropdown= (props) =>{
+    
       return ( 
         <div class="dropdown-menu" role="menu"
         style= {{...props}}
-        >      <a class="dropdown-item" tabindex="-1" onClick={()=> {this.setState({reroot: props.node});
+        >    <a class="dropdown-item" tabindex="-1" onClick={()=> this.toggleCollapse(props.nodeC)}
+        >{this.state.isNodeCollapsed ?'Expand Subtree' : 'Collapse Subtree'}</a>  
+             <div class="dropdown-divider"></div>
+              <a class="dropdown-item" tabindex="-1" onClick={()=> {this.setState({reroot: props.node});
               }}>Reroot on this node</a>
-               <div class="dropdown-divider"></div>
-               <a class="dropdown-item">Swap on this subtree</a>
-               <a class="dropdown-item" >Flip on this subtree</a>
+               
              </div> 
              
       )
@@ -271,7 +246,6 @@ class PhylotreeApplication extends Component {
     const { padding } = this.props;
     const { width, height } = this.state;
     return (<div class="container" >
-      <h1>React Phylotree</h1>
       <div style={{display: "inline-block",  width:800}} >
         <div>
         <ButtonGroup >
@@ -413,6 +387,7 @@ class PhylotreeApplication extends Component {
           alignTips={this.state.alignTips}
           sort={this.state.sort}
           reroot={this.state.reroot}
+          collapsed={this.state.collapsed}
           showAttributes={this.state.attribute}
           showLabels ={this.state.showlabel}
           showValue1={this.state.value1}

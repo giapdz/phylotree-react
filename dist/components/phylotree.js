@@ -26,7 +26,7 @@ var _underscore = _interopRequireDefault(require("underscore"));
 
 var _d3Array = require("d3-array");
 
-var _branch = _interopRequireDefault(require("./branch.jsx"));
+var _branch = _interopRequireDefault(require("./branch"));
 
 var _text_width = _interopRequireDefault(require("./text_width"));
 

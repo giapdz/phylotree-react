@@ -33,6 +33,51 @@ function Branch(props) {
     label_style = target.data.name && props.labelStyler ?
       props.labelStyler(target.data) :
       {};
+      
+      if(target.hidden==false && target.collapsed==false) {
+        return (
+        <g class ="internal-node" >
+        <path
+      className="rp-branch"
+      fill="none"
+      d={branch_line(data)}
+      {...all_branch_styles}
+
+      onMouseMove={props.tooltip ? e => {
+        setTooltip({
+          x: e.nativeEvent.offsetX,
+          y: e.nativeEvent.offsetY,
+          data: target.data
+        });
+      } : undefined}
+      onMouseOut={props.tooltip ? e => {
+        setTooltip(false);
+      } : undefined}
+      onClick={ (e)=>{
+        setIsOpen({
+          left: e.nativeEvent.offsetX+50,
+          top: e.nativeEvent.offsetY+80,
+          position: 'absolute',
+          display: 'block',
+          node: target,
+          nodeC: target
+        })
+      } }
+    />
+    <rect x={target_x} y={target_y-10} width="20" height="20" fill="grey" rx="50"
+         />
+    {showAttribute ? <text
+      x={source_x+(target_x-source_x)/2-20}
+      y={target_y-8}
+      textAnchor="start"
+      alignmentBaseline="middle"
+      className="rp-label"
+    >{target.data.attribute==0 ? '' : parseFloat(target.data.attribute).toFixed(4)}</text> : null }
+    
+    </g>)
+      }
+     else if (target.hidden==false) return null;
+      else {
    if(tree.isLeafNode(target)) {   
   return (
   <g className="node"
@@ -115,7 +160,8 @@ function Branch(props) {
           top: e.nativeEvent.offsetY+80,
           position: 'absolute',
           display: 'block',
-          node: target
+          node: target,
+          nodeC: target,
         })
       } }
     />
@@ -125,7 +171,7 @@ function Branch(props) {
       textAnchor="start"
       alignmentBaseline="middle"
       className="rp-label"
-    >{target.data.attribute===0 ? '' : parseFloat(target.data.attribute).toFixed(4)}</text> : null }
+    >{target.data.attribute==0 ? '' : parseFloat(target.data.attribute).toFixed(4)}</text> : null }
     {(()=>{ 
       if(target.data.name==='__reroot_top_clade') {
         return null
@@ -509,7 +555,8 @@ function Branch(props) {
     })()}
      
    </g>
-      )}   
+      )}  
+  } 
 }
 
 Branch.defaultProps = {

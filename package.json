@@ -1,13 +1,13 @@
 {
   "name": "@giap/phylotree",
   "description": "Phylotree with react",
-  "author": "Hoang Van Giap",
+  "author": "Hoang Van Giap <giapdz104@gmail.com>",
   "keywords": [
     "react",
     "phylotree",
     "phylogenetic"
   ],
-  "version": "1.0.2",
+  "version": "1.0.5",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "files": [
