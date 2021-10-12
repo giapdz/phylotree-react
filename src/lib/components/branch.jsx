@@ -19,6 +19,11 @@ function Branch(props) {
       [source_x, target_y],
       [target_x, target_y]
     ],
+    data1 =[
+      [target_x+18,target_y+10],
+      [target_x-2,target_y],
+      [target_x+18, target_y-10]
+    ],
     branch_line = line()
       .x(d=>d[0])
       .y(d=>d[1]),
@@ -33,8 +38,8 @@ function Branch(props) {
     label_style = target.data.name && props.labelStyler ?
       props.labelStyler(target.data) :
       {};
-      
-      if(target.hidden==false && target.collapsed==false) {
+      if(target.hidden==true && target.collapsed==false && target.parent.hidden==true) return null
+      else if(target.hidden==true && target.collapsed==false) {
         return (
         <g class ="internal-node" >
         <path
@@ -64,7 +69,7 @@ function Branch(props) {
         })
       } }
     />
-    <rect x={target_x} y={target_y-10} width="20" height="20" fill="grey" rx="50"
+    <polygon points={data1}  fill="grey" 
          />
     {showAttribute ? <text
       x={source_x+(target_x-source_x)/2-20}
@@ -76,7 +81,7 @@ function Branch(props) {
     
     </g>)
       }
-     else if (target.hidden==false) return null;
+     else if (target.hidden==true) return null;
       else {
    if(tree.isLeafNode(target)) {   
   return (

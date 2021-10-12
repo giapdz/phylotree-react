@@ -37,17 +37,17 @@ function sort_nodes (tree, direction) {
     return (a["count_depth"] - b["count_depth"]) * (asc ? 1 : -1);
   });
 }
-function toggleCollapse(tree,node) {
+ function toggleCollapse(tree,nodes) {
+   nodes.map(function(node){
   if (node.collapsed) {
     node.collapsed = false;
-
     let unhide = function(n) {
       if (!tree.isLeafNode(n)) {
         if (!n.collapsed) {
           n.children.forEach(unhide);
         }
       }
-      n.hidden = false;
+      n.hidden = true;
     };
 
     unhide(node);
@@ -55,16 +55,17 @@ function toggleCollapse(tree,node) {
     node.collapsed = true;
     
   }
-
+}
+)
 }
 
-function placenodes(tree, perform_internal_layout, accessor, sort, collapse) {
+ function placenodes(tree, perform_internal_layout, accessor, sort, collapse) {
   accessor = accessor || default_accessor;
   if(sort) {
     sort_nodes(tree, sort);
   }
   if(collapse) {
-    toggleCollapse(tree, collapse)
+   toggleCollapse(tree, collapse)
   }
   var current_leaf_height = -1,
   unique_id = 0;  
@@ -149,7 +150,7 @@ function Phylotree(props) {
     return () => {
     window.removeEventListener("mousedown", handleClickOutside);
     }
-  },[props.reroot])
+  },[props.reroot, props.collapsed])
   const handleClickOutside = (event) => {
     if (
       container.current &&
@@ -203,30 +204,41 @@ function Phylotree(props) {
       } 
       console.log(r)
       let newick2 =tree.reroot(r,1).getNewick()
-      
-        tree = new phylotree(newick2);
+      tree = new phylotree(newick2);
      
     }
   }
  
   } 
-  console.log(tree)
+ 
   if(props.collapsed) {
-    var c,
-      node_child = props.collapsed.children,
-      node_name = props.collapsed.data.name;
-      
-        for( let n of tree.getNodes()) {
-          if(!tree.isLeafNode(n)) {
-          if(node_name === n.data.name && node_child[0].data.name===n.children[0].data.name && node_child[1].data.name===n.children[1].data.name
-            && node_child[0].data.original_child_order===n.children[0].data.original_child_order && node_child[1].data.original_child_order===n.children[1].data.original_child_order  ) {
-           c=n;
-        }
-       
-      }
-      }
+    const c = [];
+    props.collapsed.forEach(function(node) {
+          for( let n of tree.getNodes()) {
+            if(!tree.isLeafNode(n) && (node.children[1].data.name==='__reroot_top_clade')) {
+              if(node.data.name === n.data.name && node.children[0].data.name===n.children[0].data.name 
+                && node_child[0].data.original_child_order===n.children[0].data.original_child_order ) {
+                  c.push(n);
+            }
+            }
+            else if(!tree.isLeafNode(n) && (node.children[0].data.name==='__reroot_top_clade')) {
+              if(node.data.name === n.data.name && node.children[1].data.name===n.children[1].data.name 
+                && node.children[1].data.original_child_order===n.children[1].data.original_child_order ) {
+                  c.push(n);
+            }
+            }
+            else if(!tree.isLeafNode(n)) {
+          if(node.data.name === n.data.name && node.children[0].data.name===n.children[0].data.name && node.children[1].data.name===n.children[1].data.name
+            && node.children[0].data.original_child_order===n.children[0].data.original_child_order && node.children[1].data.original_child_order===n.children[1].data.original_child_order
+              ) {
+           c.push(n);
+              }
+            }
+          }
+    })
     toggleCollapse(tree, c)
-    placenodes(tree, props.internalNodeLabels, props.accessor, props.sort, c);
+    placenodes(tree, props.internalNodeLabels, props.accessor, props.sort,c);
+    console.log(c)
    }
     if(!props.skipPlacement) {
       placenodes(tree, props.internalNodeLabels, props.accessor, props.sort);

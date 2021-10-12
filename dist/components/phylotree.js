@@ -5,8 +5,8 @@ require("core-js/modules/es.object.assign.js");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.placenodes = placenodes;
 exports.default = void 0;
+exports.placenodes = placenodes;
 
 require("core-js/modules/es.array.reduce.js");
 
@@ -72,24 +72,26 @@ function sort_nodes(tree, direction) {
   });
 }
 
-function toggleCollapse(tree, node) {
-  if (node.collapsed) {
-    node.collapsed = false;
+function toggleCollapse(tree, nodes) {
+  nodes.map(function (node) {
+    if (node.collapsed) {
+      node.collapsed = false;
 
-    let unhide = function unhide(n) {
-      if (!tree.isLeafNode(n)) {
-        if (!n.collapsed) {
-          n.children.forEach(unhide);
+      let unhide = function unhide(n) {
+        if (!tree.isLeafNode(n)) {
+          if (!n.collapsed) {
+            n.children.forEach(unhide);
+          }
         }
-      }
 
-      n.hidden = false;
-    };
+        n.hidden = true;
+      };
 
-    unhide(node);
-  } else {
-    node.collapsed = true;
-  }
+      unhide(node);
+    } else {
+      node.collapsed = true;
+    }
+  });
 }
 
 function placenodes(tree, perform_internal_layout, accessor, sort, collapse) {
@@ -189,7 +191,7 @@ function Phylotree(props) {
     return () => {
       window.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [props.reroot]);
+  }, [props.reroot, props.collapsed]);
 
   const handleClickOutside = event => {
     if (container.current && !container.current.contains(event.target)) {
@@ -243,23 +245,28 @@ function Phylotree(props) {
     }
   }
 
-  console.log(tree);
-
   if (props.collapsed) {
-    var c,
-        node_child = props.collapsed.children,
-        node_name = props.collapsed.data.name;
-
-    for (let n of tree.getNodes()) {
-      if (!tree.isLeafNode(n)) {
-        if (node_name === n.data.name && node_child[0].data.name === n.children[0].data.name && node_child[1].data.name === n.children[1].data.name && node_child[0].data.original_child_order === n.children[0].data.original_child_order && node_child[1].data.original_child_order === n.children[1].data.original_child_order) {
-          c = n;
+    const c = [];
+    props.collapsed.forEach(function (node) {
+      for (let n of tree.getNodes()) {
+        if (!tree.isLeafNode(n) && node.children[1].data.name === '__reroot_top_clade') {
+          if (node.data.name === n.data.name && node.children[0].data.name === n.children[0].data.name && node_child[0].data.original_child_order === n.children[0].data.original_child_order) {
+            c.push(n);
+          }
+        } else if (!tree.isLeafNode(n) && node.children[0].data.name === '__reroot_top_clade') {
+          if (node.data.name === n.data.name && node.children[1].data.name === n.children[1].data.name && node.children[1].data.original_child_order === n.children[1].data.original_child_order) {
+            c.push(n);
+          }
+        } else if (!tree.isLeafNode(n)) {
+          if (node.data.name === n.data.name && node.children[0].data.name === n.children[0].data.name && node.children[1].data.name === n.children[1].data.name && node.children[0].data.original_child_order === n.children[0].data.original_child_order && node.children[1].data.original_child_order === n.children[1].data.original_child_order) {
+            c.push(n);
+          }
         }
       }
-    }
-
+    });
     toggleCollapse(tree, c);
     placenodes(tree, props.internalNodeLabels, props.accessor, props.sort, c);
+    console.log(c);
   }
 
   if (!props.skipPlacement) {

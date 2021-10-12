@@ -1,7 +1,5 @@
 "use strict";
 
-require("core-js/modules/web.dom-collections.iterator.js");
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -14,6 +12,8 @@ require("core-js/modules/es.regexp.exec.js");
 require("core-js/modules/es.regexp.to-string.js");
 
 require("core-js/modules/es.string.search.js");
+
+require("core-js/modules/web.dom-collections.iterator.js");
 
 require("core-js/modules/es.string.split.js");
 
@@ -63,20 +63,7 @@ const imageOptions = {
   scale: 5,
   encoderOptions: 1,
   backgroundColor: 'white'
-}; // function Button(props) {
-//   return (<OverlayTrigger
-//     placement="top"
-//     overlay=
-//       {props.title}
-//   >
-//     <RBButton
-//       variant="secondary"
-//       {...props}
-//     >
-//       {props.children}
-//     </RBButton>
-//   </OverlayTrigger>);
-// }
+};
 
 function Reload(props) {
   return /*#__PURE__*/_react.default.createElement(_Button.default, _extends({
@@ -289,8 +276,10 @@ class PhylotreeApplication extends _react.Component {
       }, " ", props.nodeC ? /*#__PURE__*/_react.default.createElement("a", {
         class: "dropdown-item",
         tabindex: "-1",
-        onClick: () => this.toggleCollapse(props.nodeC)
-      }, this.state.isNodeCollapsed ? 'Expand Subtree' : 'Collapse Subtree') : null, props.nodeC ? /*#__PURE__*/_react.default.createElement("div", {
+        onClick: () => {
+          this.toggleCollapse(props.nodeC);
+        }
+      }, this.findValue(this.state.collapsed, props.nodeC) ? 'Expand Subtree' : 'Collapse Subtree') : null, props.nodeC ? /*#__PURE__*/_react.default.createElement("div", {
         class: "dropdown-divider"
       }) : null, /*#__PURE__*/_react.default.createElement("a", {
         class: "dropdown-item",
@@ -309,7 +298,7 @@ class PhylotreeApplication extends _react.Component {
       height: _props.height,
       sort: null,
       reroot: null,
-      collapsed: null,
+      collapsed: [],
       internal: false,
       newick: _props.newick,
       support: _props.support,
@@ -319,20 +308,26 @@ class PhylotreeApplication extends _react.Component {
     this.baseState = this.state;
   }
 
-  toggleCollapse(node) {
-    console.log(node);
+  findValue(haystack, needle) {
+    for (const item of haystack) {
+      if (item.data.name === needle.data.name && item.children[0].data.name === needle.children[0].data.name) {
+        return true;
+      }
+    }
 
-    if (this.state.collapsed) {
+    return false;
+  }
+
+  toggleCollapse(node) {
+    if (this.findValue(this.state.collapsed, node)) {
+      const newCollapsed = this.state.collapsed.filter(element => element.children[0].data.name !== node.children[0].data.name && element.children[1].data.name !== node.children[1].data.name);
       this.setState({
-        collapsed: null
+        collapsed: newCollapsed
       });
-      this.setState({
-        isNodeCollapsed: false
-      });
-    } else {
-      this.setState({
-        collapsed: node
-      });
+    } else if (!this.findValue(this.state.collapsed, node) || this.state.collapsed == []) {
+      this.setState(prevState => ({
+        collapsed: [...prevState.collapsed, node]
+      }));
       this.setState({
         isNodeCollapsed: true
       });

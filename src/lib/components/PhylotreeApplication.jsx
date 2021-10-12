@@ -20,21 +20,6 @@ const imageOptions = {
   backgroundColor: 'white',
 }
 
-// function Button(props) {
-//   return (<OverlayTrigger
-//     placement="top"
-//     overlay=
-//       {props.title}
-
-//   >
-//     <RBButton
-//       variant="secondary"
-//       {...props}
-//     >
-//       {props.children}
-//     </RBButton>
-//   </OverlayTrigger>);
-// }
 function Reload(props) {
   return (
     <Button
@@ -181,7 +166,7 @@ class PhylotreeApplication extends Component {
       height: props.height,
       sort: null,
       reroot:null,
-      collapsed:null,
+      collapsed:[],
       internal: false,
       newick: props.newick,
       support: props.support,
@@ -211,17 +196,26 @@ class PhylotreeApplication extends Component {
     this.setState({nodeName: event.target.value});
     
   }
-  toggleCollapse(node) {
-    console.log(node)
-    if (this.state.collapsed) {
-      this.setState({collapsed: null})
-      this.setState({isNodeCollapsed: false})
-      
-    } else {
-      this.setState({collapsed: node})
-      this.setState({isNodeCollapsed: true})
+  findValue(haystack,needle) {
+    for(const item of haystack) {
+       if(item.data.name === needle.data.name && item.children[0].data.name===needle.children[0].data.name ) {
+          return true;
+       }
     }
-  
+    return false;
+ }
+  toggleCollapse(node) {
+    
+    if (this.findValue(this.state.collapsed,node)) {
+      const newCollapsed = this.state.collapsed.filter(element => (element.children[0].data.name !== node.children[0].data.name && element.children[1].data.name !== node.children[1].data.name));
+        this.setState({ collapsed: newCollapsed });
+      
+    } else if(!this.findValue(this.state.collapsed,node) || this.state.collapsed==[]) {
+      this.setState(prevState => ({collapsed: [...prevState.collapsed, node]}))
+      this.setState({isNodeCollapsed: true})
+      
+    }
+ 
   }
   
  labelStyler =(branch) => {
@@ -240,8 +234,8 @@ class PhylotreeApplication extends Component {
       return ( 
         <div class="dropdown-menu" role="menu"
         style= {{...props}}
-        > {props.nodeC ? <a class="dropdown-item" tabindex="-1" onClick={()=> this.toggleCollapse(props.nodeC)}
-        >{this.state.isNodeCollapsed ?'Expand Subtree' : 'Collapse Subtree'}</a> : null }
+        > {props.nodeC ? <a class="dropdown-item" tabindex="-1" onClick={()=> {this.toggleCollapse(props.nodeC)}}
+        >{this.findValue(this.state.collapsed,props.nodeC) ?'Expand Subtree' : 'Collapse Subtree'}</a> : null }
              {props.nodeC ? <div class="dropdown-divider"></div>: null}
               <a class="dropdown-item" tabindex="-1" onClick={()=> {this.setState({reroot: props.node});
               }}>Reroot on this node</a>

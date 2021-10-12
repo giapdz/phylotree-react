@@ -53,14 +53,14 @@ function Branch(props) {
         target_y = yScale(target.data.abstract_y),
         tracer_x2 = props.alignTips === "right" ? props.width - (target.data.text_width || 0) : target_x,
         data = [[source_x, source_y], [source_x, target_y], [target_x, target_y]],
+        data1 = [[target_x + 18, target_y + 10], [target_x - 2, target_y], [target_x + 18, target_y - 10]],
         branch_line = (0, _d3Shape.line)().x(d => d[0]).y(d => d[1]),
         computed_branch_styles = props.branchStyler ? props.branchStyler(target.data) : target.data.annotation && colorScale ? {
     stroke: colorScale(target.data.annotation)
   } : {},
         all_branch_styles = Object.assign({}, props.branchStyle, computed_branch_styles),
         label_style = target.data.name && props.labelStyler ? props.labelStyler(target.data) : {};
-
-  if (target.hidden == false && target.collapsed == false) {
+  if (target.hidden == true && target.collapsed == false && target.parent.hidden == true) return null;else if (target.hidden == true && target.collapsed == false) {
     return /*#__PURE__*/_react.default.createElement("g", {
       class: "internal-node"
     }, /*#__PURE__*/_react.default.createElement("path", _extends({
@@ -88,13 +88,9 @@ function Branch(props) {
           nodeC: target
         });
       }
-    })), /*#__PURE__*/_react.default.createElement("rect", {
-      x: target_x,
-      y: target_y - 10,
-      width: "20",
-      height: "20",
-      fill: "grey",
-      rx: "50"
+    })), /*#__PURE__*/_react.default.createElement("polygon", {
+      points: data1,
+      fill: "grey"
     }), showAttribute ? /*#__PURE__*/_react.default.createElement("text", {
       x: source_x + (target_x - source_x) / 2 - 20,
       y: target_y - 8,
@@ -102,7 +98,7 @@ function Branch(props) {
       alignmentBaseline: "middle",
       className: "rp-label"
     }, target.data.attribute == 0 ? '' : parseFloat(target.data.attribute).toFixed(4)) : null);
-  } else if (target.hidden == false) return null;else {
+  } else if (target.hidden == true) return null;else {
     if (tree.isLeafNode(target)) {
       return /*#__PURE__*/_react.default.createElement("g", {
         className: "node"
