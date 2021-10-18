@@ -210,67 +210,52 @@ function Phylotree(props) {
     tree = new _phylotree.phylotree(newick);
 
     if (props.reroot) {
+      placenodes(tree, props.internalNodeLabels, props.accessor, props.sort);
       var r,
           node_child = props.reroot.children,
           node_name = props.reroot.data.name;
 
-      if (node_name === '__reroot_top_clade') {
-        new _phylotree.phylotree(newick);
-      } else {
-        if (node_name !== '' && !node_child) {
-          r = tree.getNodeByName(node_name);
-        } else if (node_child) {
-          for (let n of tree.getNodes()) {
-            if (!tree.isLeafNode(n) && node_child[1].data.name === '__reroot_top_clade') {
-              if (node_name === n.data.name && node_child[0].data.name === n.children[0].data.name && node_child[0].data.original_child_order === n.children[0].data.original_child_order) {
-                r = n;
-              }
-            } else if (!tree.isLeafNode(n) && node_child[0].data.name === '__reroot_top_clade') {
-              if (node_name === n.data.name && node_child[1].data.name === n.children[1].data.name && node_child[1].data.original_child_order === n.children[1].data.original_child_order) {
-                r = n;
-              }
-            } else if (!tree.isLeafNode(n)) {
-              if (node_name === n.data.name && node_child[0].data.name === n.children[0].data.name && node_child[1].data.name === n.children[1].data.name && node_child[0].data.original_child_order === n.children[0].data.original_child_order && node_child[1].data.original_child_order === n.children[1].data.original_child_order) {
-                r = n;
-              }
+      if (node_name !== '' && !node_child) {
+        r = tree.getNodeByName(node_name);
+      } else if (node_child) {
+        for (let n of tree.getNodes()) {
+          if (!tree.isLeafNode(n) && node_child[1].data.name === '__reroot_top_clade') {
+            if (node_name === n.data.name && node_child[0].data.name === n.children[0].data.name) {
+              r = n;
             }
-          } //  r= target_node(node_child,node_name,tree.nodes)
+          } else if (!tree.isLeafNode(n) && node_child[0].data.name === '__reroot_top_clade') {
+            if (node_name === n.data.name && node_child[1].data.name === n.children[1].data.name) {
+              r = n;
+            }
+          } else if (!tree.isLeafNode(n)) {
+            if (node_name === n.data.name && (props.reroot.data.attribute === n.data.attribute || node_child[0].data.name === n.children[0].data.name || node_child[1].data.name === n.children[1].data.name)) {
+              r = n;
+            } // else if (node_name === n.data.name) r = n
 
-        }
+          }
+        } //  r= target_node(node_child,node_name,tree.nodes)
 
-        console.log(r);
-        let newick2 = tree.reroot(r, 1).getNewick();
-        tree = new _phylotree.phylotree(newick2);
       }
+
+      let newick2 = tree.reroot(r, 1).getNewick();
+      tree = new _phylotree.phylotree(newick2);
+      console.log(tree);
     }
-  }
 
-  if (props.collapsed) {
-    const c = [];
-    props.collapsed.forEach(function (node) {
-      for (let n of tree.getNodes()) {
-        if (!tree.isLeafNode(n) && node.children[1].data.name === '__reroot_top_clade') {
-          if (node.data.name === n.data.name && node.children[0].data.name === n.children[0].data.name && node_child[0].data.original_child_order === n.children[0].data.original_child_order) {
-            c.push(n);
-          }
-        } else if (!tree.isLeafNode(n) && node.children[0].data.name === '__reroot_top_clade') {
-          if (node.data.name === n.data.name && node.children[1].data.name === n.children[1].data.name && node.children[1].data.original_child_order === n.children[1].data.original_child_order) {
-            c.push(n);
-          }
-        } else if (!tree.isLeafNode(n)) {
-          if (node.data.name === n.data.name && node.children[0].data.name === n.children[0].data.name && node.children[1].data.name === n.children[1].data.name && node.children[0].data.original_child_order === n.children[0].data.original_child_order && node.children[1].data.original_child_order === n.children[1].data.original_child_order) {
-            c.push(n);
+    if (props.collapsed) {
+      const c = [];
+      props.collapsed.forEach(function (node) {
+        for (let n of tree.getNodes()) {
+          if (!tree.isLeafNode(n)) {
+            if (node.data.name === n.data.name && node.data.attribute === n.data.attribute && node.children[0].data.name === n.children[0].data.name && node.children[1].data.name === n.children[1].data.name) {
+              c.push(n);
+            }
           }
         }
-      }
-    });
-    toggleCollapse(tree, c);
-    placenodes(tree, props.internalNodeLabels, props.accessor, props.sort, c);
-    console.log(c);
-  }
-
-  if (!props.skipPlacement) {
-    placenodes(tree, props.internalNodeLabels, props.accessor, props.sort);
+      });
+      toggleCollapse(tree, c);
+      placenodes(tree, props.internalNodeLabels, props.accessor, props.sort, c);
+    }
   }
 
   function attachTextWidth(node) {
@@ -316,6 +301,11 @@ function Phylotree(props) {
     const show_value3 = props.showValue3;
     const show_value4 = props.showValue4;
     const show_value5 = props.showValue5;
+    const round1 = props.round1;
+    const round2 = props.round2;
+    const round3 = props.round3;
+    const round4 = props.round4;
+    const round5 = props.round5;
     return /*#__PURE__*/_react.default.createElement(_branch.default, {
       tree: tree,
       key: key,
@@ -330,6 +320,11 @@ function Phylotree(props) {
       showValue3: show_value3,
       showValue4: show_value4,
       showValue5: show_value5,
+      round1: round1,
+      round2: round2,
+      round3: round3,
+      round4: round4,
+      round5: round5,
       maxLabelWidth: maxLabelWidth,
       width: width,
       alignTips: props.alignTips,

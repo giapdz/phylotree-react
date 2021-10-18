@@ -11,14 +11,7 @@ text.rp-label {
   font-family: Courier;
   font-size: 12px;
 }
-/* circle {
-  stroke: black;
-  stroke-width: 0.5px;
-}
-circle:hover {
-  stroke: black;
-  stroke-width: 4px;
-} */
+
 .rp-branch-tracer {
   stroke: black;
   stroke-dasharray: 3,4;

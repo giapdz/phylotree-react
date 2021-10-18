@@ -170,6 +170,7 @@ class PhylotreeApplication extends Component {
       internal: false,
       newick: props.newick,
       support: props.support,
+      round: props.round,
       nodeName:'',
       showlabel: true,
     };
@@ -184,7 +185,6 @@ class PhylotreeApplication extends Component {
       new_state = {};
     new_state[dimension] = new_dimension;
     this.setState(new_state);
-    console.log([dimension])
   }
   handleSort= (direction) => {
     this.setState({sort: direction});
@@ -198,7 +198,7 @@ class PhylotreeApplication extends Component {
   }
   findValue(haystack,needle) {
     for(const item of haystack) {
-       if(item.data.name === needle.data.name && item.children[0].data.name===needle.children[0].data.name ) {
+       if(item.unique_id === needle.unique_id ) {
           return true;
        }
     }
@@ -207,10 +207,10 @@ class PhylotreeApplication extends Component {
   toggleCollapse(node) {
     
     if (this.findValue(this.state.collapsed,node)) {
-      const newCollapsed = this.state.collapsed.filter(element => (element.children[0].data.name !== node.children[0].data.name && element.children[1].data.name !== node.children[1].data.name));
+      const newCollapsed = this.state.collapsed.filter(element => ( element.unique_id !== node.unique_id ));
         this.setState({ collapsed: newCollapsed });
       
-    } else if(!this.findValue(this.state.collapsed,node) || this.state.collapsed==[]) {
+    } else if(!this.findValue(this.state.collapsed,node) || this.state.collapsed===[]) {
       this.setState(prevState => ({collapsed: [...prevState.collapsed, node]}))
       this.setState({isNodeCollapsed: true})
       
@@ -236,9 +236,9 @@ class PhylotreeApplication extends Component {
         style= {{...props}}
         > {props.nodeC ? <a class="dropdown-item" tabindex="-1" onClick={()=> {this.toggleCollapse(props.nodeC)}}
         >{this.findValue(this.state.collapsed,props.nodeC) ?'Expand Subtree' : 'Collapse Subtree'}</a> : null }
-             {props.nodeC ? <div class="dropdown-divider"></div>: null}
-              <a class="dropdown-item" tabindex="-1" onClick={()=> {this.setState({reroot: props.node});
-              }}>Reroot on this node</a>
+             {(props.nodeC && props.node) ? <div class="dropdown-divider"></div>: null}
+             {props.node ? <a class="dropdown-item" tabindex="-1" onClick={()=> {this.setState({reroot: props.node})
+              }}>Reroot on this node</a> : null }
                
              </div> 
              
@@ -399,6 +399,11 @@ class PhylotreeApplication extends Component {
           showValue3={this.state.value3}
           showValue4={this.state.value4}
           showValue5={this.state.value5}
+          round1={this.state.round.split(',')[0]}
+          round2={this.state.round.split(',')[1]}
+          round3={this.state.round.split(',')[2]}
+          round4={this.state.round.split(',')[3]}
+          round5={this.state.round.split(',')[4]}
           tooltip ={TooltipContents}
           isOpen={this.openDropdown}
           includeBLAxis
@@ -411,7 +416,8 @@ PhylotreeApplication.defaultProps = {
   padding: 100,
   height: 600,
   width: 600,
-  support: "value 1/value 2/value 3/value 4/value 5"
+  support: "value 1/value 2/value 3/value 4/value 5",
+  round: "-1,-1,-1,-1,-1"
 };
 
 export default PhylotreeApplication;

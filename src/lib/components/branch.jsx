@@ -5,7 +5,7 @@ import "./styles/phylotree.css"
 
 function Branch(props) {
 
-  const { xScale, yScale, colorScale, showLabel, setTooltip, showAttribute,tree, setIsOpen, showValue1, showValue2, showValue3, showValue4, showValue5} = props,
+  const { xScale, yScale, colorScale, showLabel, setTooltip, showAttribute,tree, setIsOpen, showValue1, showValue2, showValue3, showValue4, showValue5, round1, round2, round3, round4, round5} = props,
     { source, target } = props.link,
     source_x = xScale(source.data.abstract_x),
     source_y = yScale(source.data.abstract_y),
@@ -14,6 +14,11 @@ function Branch(props) {
     tracer_x2 = props.alignTips === "right" ?
       props.width - (target.data.text_width || 0) :
       target_x,
+      round_1 = parseFloat(round1),
+      round_2 = parseFloat(round2),
+      round_3 = parseFloat(round3),
+      round_4 = parseFloat(round4),
+      round_5 = parseFloat(round5),
     data = [
       [source_x, source_y],
       [source_x, target_y],
@@ -38,8 +43,8 @@ function Branch(props) {
     label_style = target.data.name && props.labelStyler ?
       props.labelStyler(target.data) :
       {};
-      if(target.hidden==true && target.collapsed==false && target.parent.hidden==true) return null
-      else if(target.hidden==true && target.collapsed==false) {
+      if(target.hidden===true && target.collapsed===false && target.parent.hidden===true) return null;
+      else if(target.hidden===true && target.collapsed===false && target.data.attribute !== '0') {
         return (
         <g class ="internal-node" >
         <path
@@ -77,11 +82,84 @@ function Branch(props) {
       textAnchor="start"
       alignmentBaseline="middle"
       className="rp-label"
-    >{target.data.attribute==0 ? '' : parseFloat(target.data.attribute).toFixed(4)}</text> : null }
+    >{parseFloat(target.data.attribute).toFixed(4)}</text> : null }
     
     </g>)
       }
-     else if (target.hidden==true) return null;
+      else if(target.hidden===true && target.collapsed===false && target.data.attribute === '0') {
+        return (
+        <g class ="internal-node" >
+        <path
+      className="rp-branch"
+      fill="none"
+      d={branch_line(data)}
+      {...all_branch_styles}
+
+      onMouseMove={props.tooltip ? e => {
+        setTooltip({
+          x: e.nativeEvent.offsetX,
+          y: e.nativeEvent.offsetY,
+          data: target.data
+        });
+      } : undefined}
+      onMouseOut={props.tooltip ? e => {
+        setTooltip(false);
+      } : undefined}
+      onClick={ (e)=>{
+        setIsOpen({
+          left: e.nativeEvent.offsetX+50,
+          top: e.nativeEvent.offsetY+80,
+          position: 'absolute',
+          display: 'block',
+          nodeC: target
+        })
+      } }
+    />
+    <polygon points={data1}  fill="grey" 
+         />
+    {showAttribute ? <text
+      x={source_x+(target_x-source_x)/2-20}
+      y={target_y-8}
+      textAnchor="start"
+      alignmentBaseline="middle"
+      className="rp-label"
+    ></text> : null }
+    
+    </g>)
+      }
+      // else if(target.data.attribute=== '0' && target.collapsed===false) {
+      //   return(
+      //     <g class ="internal-node" >
+      //       <path
+      //     className="rp-branch"
+      //     fill="none"
+      //     d={branch_line(data)}
+      //     {...all_branch_styles}
+    
+      //     onMouseMove={props.tooltip ? e => {
+      //       setTooltip({
+      //         x: e.nativeEvent.offsetX,
+      //         y: e.nativeEvent.offsetY,
+      //         data: target.data
+      //       });
+      //     } : undefined}
+      //     onMouseOut={props.tooltip ? e => {
+      //       setTooltip(false);
+      //     } : undefined}
+      //     onClick={ (e)=>{
+      //       setIsOpen({
+      //         left: e.nativeEvent.offsetX+50,
+      //         top: e.nativeEvent.offsetY+80,
+      //         position: 'absolute',
+      //         display: 'block',
+      //         nodeC: target,
+      //       })
+      //     } }
+      //   />
+      //   </g>
+      //   )
+      // }
+     else if (target.hidden===true) return null;
       else {
    if(tree.isLeafNode(target)) {   
   return (
@@ -140,7 +218,8 @@ function Branch(props) {
   
 );
     }
-    else { 
+    
+    else {
       return(
       <g class ="internal-node" >
         <path
@@ -165,7 +244,7 @@ function Branch(props) {
           top: e.nativeEvent.offsetY+80,
           position: 'absolute',
           display: 'block',
-          node: target,
+          node: target.data.attribute==='0'? null : target,
           nodeC: target,
         })
       } }
@@ -176,7 +255,7 @@ function Branch(props) {
       textAnchor="start"
       alignmentBaseline="middle"
       className="rp-label"
-    >{target.data.attribute==0 ? '' : parseFloat(target.data.attribute).toFixed(4)}</text> : null }
+    >{parseFloat(target.data.attribute).toFixed(4)}</text> : null }
     {(()=>{ 
       if(target.data.name==='__reroot_top_clade') {
         return null
@@ -192,7 +271,7 @@ function Branch(props) {
      alignmentBaseline="middle"
      className="rp-label"
      >
-    {target.data.name.split("/")[0]}</text> )
+    {round_1=== -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1)}</text> )
      }
       if((!showValue5 && !showValue1 && !showValue3 && !showValue4) && showValue2) {
        return (
@@ -203,7 +282,7 @@ function Branch(props) {
      alignmentBaseline="middle"
      className="rp-label"
      >
-    {target.data.name.split("/")[1]}</text> 
+    {round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2)}</text> 
        )
      }
      
@@ -216,7 +295,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[2]}</text> 
+   {round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3)}</text> 
       )
     }
     if((!showValue1 && !showValue2 && !showValue3 && !showValue5) && showValue4) {
@@ -228,7 +307,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[3]}</text> 
+   {round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4)}</text> 
       )
     }
     if((!showValue1 && !showValue2 && !showValue3 && !showValue4) && showValue5) {
@@ -240,7 +319,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[4]}</text> 
+   {round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5)}</text> 
       )
     }
     if((showValue1 && showValue2) && !(showValue3 || showValue4 || showValue5)) {
@@ -252,7 +331,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[0]}/{target.data.name.split("/")[1]}</text> 
+   {round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1)}/{round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2)}</text> 
       )
     }
     if((showValue1 && showValue3) && !(showValue2|| showValue4 || showValue5)) {
@@ -264,7 +343,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[0]}/{target.data.name.split("/")[2]}</text> 
+   {round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1)}/{round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3)}</text> 
       )
     }
     if((showValue1 && showValue4) && !(showValue2 || showValue3 || showValue5)) {
@@ -276,7 +355,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[0]}/{target.data.name.split("/")[3]}</text> 
+   {round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1)}/{round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4)}</text> 
       )
     }
     if((showValue1 && showValue5) && !(showValue3 || showValue4 || showValue2)) {
@@ -288,7 +367,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[0]}/{target.data.name.split("/")[4]}</text> 
+   {round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1)}/{round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5)}</text> 
       )
     }
     if((showValue2 && showValue3) && !(showValue1 || showValue4 || showValue5)) {
@@ -300,7 +379,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[1]}/{target.data.name.split("/")[2]}</text> 
+   {round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2)}/{round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3)}</text> 
       )
     }
     if((showValue2 && showValue4) && !(showValue3 || showValue1 || showValue5)) {
@@ -312,7 +391,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[1]}/{target.data.name.split("/")[3]}</text> 
+   {round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2)}/{round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4)}</text> 
       )
     }
     if((showValue2 && showValue5) && !(showValue3 || showValue4 || showValue1)) {
@@ -324,7 +403,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[1]}/{target.data.name.split("/")[4]}</text> 
+   {round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2)}/{round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5)}</text> 
       )
     }
     if((showValue3 && showValue4) && !(showValue1 || showValue2 || showValue5)) {
@@ -336,7 +415,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[2]}/{target.data.name.split("/")[3]}</text> 
+   {round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3)}/{round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4)}</text> 
       )
     }
     if((showValue3 && showValue5) && !(showValue1 || showValue2 || showValue4)) {
@@ -348,7 +427,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[2]}/{target.data.name.split("/")[4]}</text> 
+   {round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3)}/{round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5)}</text> 
       )
     }
     if((showValue4 && showValue5) && !(showValue1 || showValue2 || showValue3)) {
@@ -360,7 +439,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[3]}/{target.data.name.split("/")[4]}</text> 
+   {round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4)}/{round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5)}</text> 
       )
     }
     if((showValue1 && showValue2 && showValue3) && !(showValue4 || showValue5)) {
@@ -372,7 +451,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[0]}/{target.data.name.split("/")[1]}/{target.data.name.split("/")[2]}</text> 
+   {round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1)}/{round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2)}/{round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3)}</text> 
       )
     }
     if((showValue1 && showValue2 && showValue4) && !(showValue3 || showValue5)) {
@@ -384,7 +463,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[0]}/{target.data.name.split("/")[1]}/{target.data.name.split("/")[3]}</text> 
+   {round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1)}/{round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2)}/{round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4)}</text> 
       )
     }
     if((showValue1 && showValue2 && showValue5) && !(showValue3 || showValue4)) {
@@ -396,7 +475,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[0]}/{target.data.name.split("/")[1]}/{target.data.name.split("/")[4]}</text> 
+   {round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1)}/{round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2)}/{round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5)}</text> 
       )
     }
     if((showValue1 && showValue3 && showValue4) && !(showValue2 || showValue5)) {
@@ -408,7 +487,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[0]}/{target.data.name.split("/")[2]}/{target.data.name.split("/")[3]}</text> 
+   {round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1)}/{round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3)}/{round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4)}</text> 
       )
     }
     if((showValue1 && showValue3 && showValue5) && !(showValue2 || showValue4)) {
@@ -420,7 +499,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[0]}/{target.data.name.split("/")[2]}/{target.data.name.split("/")[4]}</text> 
+   {round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1)}/{round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3)}/{round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5)}</text> 
       )
     }
     if((showValue1 && showValue4 && showValue5) && !(showValue2 || showValue3)) {
@@ -432,7 +511,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[0]}/{target.data.name.split("/")[3]}/{target.data.name.split("/")[4]}</text> 
+   {round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1)}/{round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4)}/{round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5)}</text> 
       )
     }
     if((showValue2 && showValue3 && showValue4) && !(showValue1 || showValue5)) {
@@ -444,7 +523,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[1]}/{target.data.name.split("/")[2]}/{target.data.name.split("/")[3]}</text> 
+   {round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2)}/{round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3)}/{round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4)}</text> 
       )
     }
     if((showValue2 && showValue3 && showValue5) && !(showValue1 || showValue4)) {
@@ -456,7 +535,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[1]}/{target.data.name.split("/")[2]}/{target.data.name.split("/")[4]}</text> 
+   {round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2)}/{round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3)}/{round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5)}</text> 
       )
     }
     if((showValue2 && showValue4 && showValue5) && !(showValue1 || showValue3)) {
@@ -468,7 +547,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[1]}/{target.data.name.split("/")[3]}/{target.data.name.split("/")[4]}</text> 
+   {round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2)}/{round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4)}/{round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5)}</text> 
       )
     }
     if((showValue3 && showValue4 && showValue5) && !(showValue1 || showValue2)) {
@@ -480,7 +559,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[2]}/{target.data.name.split("/")[3]}/{target.data.name.split("/")[4]}</text> 
+   {round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3)}/{round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4)}/{round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5)}</text> 
       )
     }
     if((showValue1 && showValue2 && showValue3 && showValue4) && !showValue5) {
@@ -492,7 +571,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[0]}/{target.data.name.split("/")[1]}/{target.data.name.split("/")[2]}/{target.data.name.split("/")[3]}</text> 
+   {round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1)}/{round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2)}/{round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3)}/{round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4)}</text> 
       )
     }
     if((showValue1 && showValue2 && showValue3 && showValue5) && !showValue4) {
@@ -504,7 +583,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[0]}/{target.data.name.split("/")[1]}/{target.data.name.split("/")[2]}/{target.data.name.split("/")[4]}</text> 
+   {round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1)}/{round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2)}/{round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3)}/{round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5)}</text> 
       )
     }
     if((showValue1 && showValue2 && showValue4 && showValue5) && !showValue3) {
@@ -516,7 +595,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[0]}/{target.data.name.split("/")[1]}/{target.data.name.split("/")[3]}/{target.data.name.split("/")[4]}</text> 
+   {round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1)}/{round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2)}/{round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4)}/{round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5)}</text> 
       )
     }
     if((showValue1 && showValue3 && showValue4 && showValue5) && !showValue2) {
@@ -528,7 +607,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[0]}/{target.data.name.split("/")[2]}/{target.data.name.split("/")[3]}/{target.data.name.split("/")[4]}</text> 
+   {round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1)}/{round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3)}/{round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4)}/{round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5)}</text> 
       )
     }
     if((showValue2 && showValue3 && showValue4 &&showValue5) && !showValue1) {
@@ -540,7 +619,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[1]}/{target.data.name.split("/")[2]}/{target.data.name.split("/")[3]}/{target.data.name.split("/")[4]}</text> 
+   {round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2)}/{round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3)}/{round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4)}/{round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5)}</text> 
       )
     }
     if(showValue1 && showValue2 && showValue3 && showValue4 && showValue5) {
@@ -552,7 +631,7 @@ function Branch(props) {
     alignmentBaseline="middle"
     className="rp-label"
     >
-   {target.data.name.split("/")[0]}/{target.data.name.split("/")[1]}/{target.data.name.split("/")[2]}/{target.data.name.split("/")[3]}/{target.data.name.split("/")[4]}</text> 
+   {round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1)}/{round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2)}/{round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3)}/{round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4)}/{round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5)}</text> 
       )
     }
      else return null;

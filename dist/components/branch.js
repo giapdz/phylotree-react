@@ -5,11 +5,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+require("core-js/modules/es.parse-float.js");
+
 require("core-js/modules/es.object.assign.js");
 
 require("core-js/modules/es.number.to-fixed.js");
-
-require("core-js/modules/es.parse-float.js");
 
 require("core-js/modules/es.regexp.exec.js");
 
@@ -41,7 +41,12 @@ function Branch(props) {
     showValue2,
     showValue3,
     showValue4,
-    showValue5
+    showValue5,
+    round1,
+    round2,
+    round3,
+    round4,
+    round5
   } = props,
         {
     source,
@@ -52,6 +57,11 @@ function Branch(props) {
         target_x = xScale(target.data.abstract_x),
         target_y = yScale(target.data.abstract_y),
         tracer_x2 = props.alignTips === "right" ? props.width - (target.data.text_width || 0) : target_x,
+        round_1 = parseFloat(round1),
+        round_2 = parseFloat(round2),
+        round_3 = parseFloat(round3),
+        round_4 = parseFloat(round4),
+        round_5 = parseFloat(round5),
         data = [[source_x, source_y], [source_x, target_y], [target_x, target_y]],
         data1 = [[target_x + 18, target_y + 10], [target_x - 2, target_y], [target_x + 18, target_y - 10]],
         branch_line = (0, _d3Shape.line)().x(d => d[0]).y(d => d[1]),
@@ -60,7 +70,7 @@ function Branch(props) {
   } : {},
         all_branch_styles = Object.assign({}, props.branchStyle, computed_branch_styles),
         label_style = target.data.name && props.labelStyler ? props.labelStyler(target.data) : {};
-  if (target.hidden == true && target.collapsed == false && target.parent.hidden == true) return null;else if (target.hidden == true && target.collapsed == false) {
+  if (target.hidden === true && target.collapsed === false && target.parent.hidden === true) return null;else if (target.hidden === true && target.collapsed === false && target.data.attribute !== '0') {
     return /*#__PURE__*/_react.default.createElement("g", {
       class: "internal-node"
     }, /*#__PURE__*/_react.default.createElement("path", _extends({
@@ -97,8 +107,76 @@ function Branch(props) {
       textAnchor: "start",
       alignmentBaseline: "middle",
       className: "rp-label"
-    }, target.data.attribute == 0 ? '' : parseFloat(target.data.attribute).toFixed(4)) : null);
-  } else if (target.hidden == true) return null;else {
+    }, parseFloat(target.data.attribute).toFixed(4)) : null);
+  } else if (target.hidden === true && target.collapsed === false && target.data.attribute === '0') {
+    return /*#__PURE__*/_react.default.createElement("g", {
+      class: "internal-node"
+    }, /*#__PURE__*/_react.default.createElement("path", _extends({
+      className: "rp-branch",
+      fill: "none",
+      d: branch_line(data)
+    }, all_branch_styles, {
+      onMouseMove: props.tooltip ? e => {
+        setTooltip({
+          x: e.nativeEvent.offsetX,
+          y: e.nativeEvent.offsetY,
+          data: target.data
+        });
+      } : undefined,
+      onMouseOut: props.tooltip ? e => {
+        setTooltip(false);
+      } : undefined,
+      onClick: e => {
+        setIsOpen({
+          left: e.nativeEvent.offsetX + 50,
+          top: e.nativeEvent.offsetY + 80,
+          position: 'absolute',
+          display: 'block',
+          nodeC: target
+        });
+      }
+    })), /*#__PURE__*/_react.default.createElement("polygon", {
+      points: data1,
+      fill: "grey"
+    }), showAttribute ? /*#__PURE__*/_react.default.createElement("text", {
+      x: source_x + (target_x - source_x) / 2 - 20,
+      y: target_y - 8,
+      textAnchor: "start",
+      alignmentBaseline: "middle",
+      className: "rp-label"
+    }) : null);
+  } // else if(target.data.attribute=== '0' && target.collapsed===false) {
+  //   return(
+  //     <g class ="internal-node" >
+  //       <path
+  //     className="rp-branch"
+  //     fill="none"
+  //     d={branch_line(data)}
+  //     {...all_branch_styles}
+  //     onMouseMove={props.tooltip ? e => {
+  //       setTooltip({
+  //         x: e.nativeEvent.offsetX,
+  //         y: e.nativeEvent.offsetY,
+  //         data: target.data
+  //       });
+  //     } : undefined}
+  //     onMouseOut={props.tooltip ? e => {
+  //       setTooltip(false);
+  //     } : undefined}
+  //     onClick={ (e)=>{
+  //       setIsOpen({
+  //         left: e.nativeEvent.offsetX+50,
+  //         top: e.nativeEvent.offsetY+80,
+  //         position: 'absolute',
+  //         display: 'block',
+  //         nodeC: target,
+  //       })
+  //     } }
+  //   />
+  //   </g>
+  //   )
+  // }
+  else if (target.hidden === true) return null;else {
     if (tree.isLeafNode(target)) {
       return /*#__PURE__*/_react.default.createElement("g", {
         className: "node"
@@ -170,7 +248,7 @@ function Branch(props) {
             top: e.nativeEvent.offsetY + 80,
             position: 'absolute',
             display: 'block',
-            node: target,
+            node: target.data.attribute === '0' ? null : target,
             nodeC: target
           });
         }
@@ -180,7 +258,7 @@ function Branch(props) {
         textAnchor: "start",
         alignmentBaseline: "middle",
         className: "rp-label"
-      }, target.data.attribute == 0 ? '' : parseFloat(target.data.attribute).toFixed(4)) : null, (() => {
+      }, parseFloat(target.data.attribute).toFixed(4)) : null, (() => {
         if (target.data.name === '__reroot_top_clade') {
           return null;
         } else {
@@ -195,7 +273,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[0]);
+            }, round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1));
           }
 
           if (!showValue5 && !showValue1 && !showValue3 && !showValue4 && showValue2) {
@@ -205,7 +283,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[1]);
+            }, round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2));
           }
 
           if (!showValue1 && !showValue2 && !showValue4 && !showValue5 && showValue3) {
@@ -215,7 +293,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[2]);
+            }, round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3));
           }
 
           if (!showValue1 && !showValue2 && !showValue3 && !showValue5 && showValue4) {
@@ -225,7 +303,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[3]);
+            }, round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4));
           }
 
           if (!showValue1 && !showValue2 && !showValue3 && !showValue4 && showValue5) {
@@ -235,7 +313,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[4]);
+            }, round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5));
           }
 
           if (showValue1 && showValue2 && !(showValue3 || showValue4 || showValue5)) {
@@ -245,7 +323,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[0], "/", target.data.name.split("/")[1]);
+            }, round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1), "/", round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2));
           }
 
           if (showValue1 && showValue3 && !(showValue2 || showValue4 || showValue5)) {
@@ -255,7 +333,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[0], "/", target.data.name.split("/")[2]);
+            }, round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1), "/", round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3));
           }
 
           if (showValue1 && showValue4 && !(showValue2 || showValue3 || showValue5)) {
@@ -265,7 +343,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[0], "/", target.data.name.split("/")[3]);
+            }, round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1), "/", round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4));
           }
 
           if (showValue1 && showValue5 && !(showValue3 || showValue4 || showValue2)) {
@@ -275,7 +353,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[0], "/", target.data.name.split("/")[4]);
+            }, round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1), "/", round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5));
           }
 
           if (showValue2 && showValue3 && !(showValue1 || showValue4 || showValue5)) {
@@ -285,7 +363,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[1], "/", target.data.name.split("/")[2]);
+            }, round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2), "/", round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3));
           }
 
           if (showValue2 && showValue4 && !(showValue3 || showValue1 || showValue5)) {
@@ -295,7 +373,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[1], "/", target.data.name.split("/")[3]);
+            }, round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2), "/", round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4));
           }
 
           if (showValue2 && showValue5 && !(showValue3 || showValue4 || showValue1)) {
@@ -305,7 +383,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[1], "/", target.data.name.split("/")[4]);
+            }, round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2), "/", round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5));
           }
 
           if (showValue3 && showValue4 && !(showValue1 || showValue2 || showValue5)) {
@@ -315,7 +393,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[2], "/", target.data.name.split("/")[3]);
+            }, round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3), "/", round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4));
           }
 
           if (showValue3 && showValue5 && !(showValue1 || showValue2 || showValue4)) {
@@ -325,7 +403,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[2], "/", target.data.name.split("/")[4]);
+            }, round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3), "/", round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5));
           }
 
           if (showValue4 && showValue5 && !(showValue1 || showValue2 || showValue3)) {
@@ -335,7 +413,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[3], "/", target.data.name.split("/")[4]);
+            }, round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4), "/", round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5));
           }
 
           if (showValue1 && showValue2 && showValue3 && !(showValue4 || showValue5)) {
@@ -345,7 +423,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[0], "/", target.data.name.split("/")[1], "/", target.data.name.split("/")[2]);
+            }, round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1), "/", round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2), "/", round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3));
           }
 
           if (showValue1 && showValue2 && showValue4 && !(showValue3 || showValue5)) {
@@ -355,7 +433,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[0], "/", target.data.name.split("/")[1], "/", target.data.name.split("/")[3]);
+            }, round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1), "/", round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2), "/", round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4));
           }
 
           if (showValue1 && showValue2 && showValue5 && !(showValue3 || showValue4)) {
@@ -365,7 +443,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[0], "/", target.data.name.split("/")[1], "/", target.data.name.split("/")[4]);
+            }, round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1), "/", round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2), "/", round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5));
           }
 
           if (showValue1 && showValue3 && showValue4 && !(showValue2 || showValue5)) {
@@ -375,7 +453,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[0], "/", target.data.name.split("/")[2], "/", target.data.name.split("/")[3]);
+            }, round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1), "/", round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3), "/", round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4));
           }
 
           if (showValue1 && showValue3 && showValue5 && !(showValue2 || showValue4)) {
@@ -385,7 +463,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[0], "/", target.data.name.split("/")[2], "/", target.data.name.split("/")[4]);
+            }, round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1), "/", round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3), "/", round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5));
           }
 
           if (showValue1 && showValue4 && showValue5 && !(showValue2 || showValue3)) {
@@ -395,7 +473,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[0], "/", target.data.name.split("/")[3], "/", target.data.name.split("/")[4]);
+            }, round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1), "/", round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4), "/", round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5));
           }
 
           if (showValue2 && showValue3 && showValue4 && !(showValue1 || showValue5)) {
@@ -405,7 +483,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[1], "/", target.data.name.split("/")[2], "/", target.data.name.split("/")[3]);
+            }, round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2), "/", round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3), "/", round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4));
           }
 
           if (showValue2 && showValue3 && showValue5 && !(showValue1 || showValue4)) {
@@ -415,7 +493,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[1], "/", target.data.name.split("/")[2], "/", target.data.name.split("/")[4]);
+            }, round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2), "/", round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3), "/", round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5));
           }
 
           if (showValue2 && showValue4 && showValue5 && !(showValue1 || showValue3)) {
@@ -425,7 +503,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[1], "/", target.data.name.split("/")[3], "/", target.data.name.split("/")[4]);
+            }, round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2), "/", round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4), "/", round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5));
           }
 
           if (showValue3 && showValue4 && showValue5 && !(showValue1 || showValue2)) {
@@ -435,7 +513,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[2], "/", target.data.name.split("/")[3], "/", target.data.name.split("/")[4]);
+            }, round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3), "/", round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4), "/", round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5));
           }
 
           if (showValue1 && showValue2 && showValue3 && showValue4 && !showValue5) {
@@ -445,7 +523,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[0], "/", target.data.name.split("/")[1], "/", target.data.name.split("/")[2], "/", target.data.name.split("/")[3]);
+            }, round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1), "/", round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2), "/", round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3), "/", round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4));
           }
 
           if (showValue1 && showValue2 && showValue3 && showValue5 && !showValue4) {
@@ -455,7 +533,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[0], "/", target.data.name.split("/")[1], "/", target.data.name.split("/")[2], "/", target.data.name.split("/")[4]);
+            }, round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1), "/", round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2), "/", round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3), "/", round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5));
           }
 
           if (showValue1 && showValue2 && showValue4 && showValue5 && !showValue3) {
@@ -465,7 +543,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[0], "/", target.data.name.split("/")[1], "/", target.data.name.split("/")[3], "/", target.data.name.split("/")[4]);
+            }, round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1), "/", round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2), "/", round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4), "/", round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5));
           }
 
           if (showValue1 && showValue3 && showValue4 && showValue5 && !showValue2) {
@@ -475,7 +553,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[0], "/", target.data.name.split("/")[2], "/", target.data.name.split("/")[3], "/", target.data.name.split("/")[4]);
+            }, round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1), "/", round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3), "/", round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4), "/", round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5));
           }
 
           if (showValue2 && showValue3 && showValue4 && showValue5 && !showValue1) {
@@ -485,7 +563,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[1], "/", target.data.name.split("/")[2], "/", target.data.name.split("/")[3], "/", target.data.name.split("/")[4]);
+            }, round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2), "/", round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3), "/", round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4), "/", round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5));
           }
 
           if (showValue1 && showValue2 && showValue3 && showValue4 && showValue5) {
@@ -495,7 +573,7 @@ function Branch(props) {
               textAnchor: "start",
               alignmentBaseline: "middle",
               className: "rp-label"
-            }, target.data.name.split("/")[0], "/", target.data.name.split("/")[1], "/", target.data.name.split("/")[2], "/", target.data.name.split("/")[3], "/", target.data.name.split("/")[4]);
+            }, round_1 === -1 ? target.data.name.split("/")[0] : parseFloat(target.data.name.split("/")[0]).toFixed(round_1), "/", round_2 === -1 ? target.data.name.split("/")[1] : parseFloat(target.data.name.split("/")[1]).toFixed(round_2), "/", round_3 === -1 ? target.data.name.split("/")[2] : parseFloat(target.data.name.split("/")[2]).toFixed(round_3), "/", round_4 === -1 ? target.data.name.split("/")[3] : parseFloat(target.data.name.split("/")[3]).toFixed(round_4), "/", round_5 === -1 ? target.data.name.split("/")[4] : parseFloat(target.data.name.split("/")[4]).toFixed(round_5));
           } else return null;
         }
       })());
