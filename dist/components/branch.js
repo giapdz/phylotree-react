@@ -15,6 +15,8 @@ require("core-js/modules/es.regexp.exec.js");
 
 require("core-js/modules/es.string.split.js");
 
+require("core-js/modules/es.string.includes.js");
+
 var _react = _interopRequireDefault(require("react"));
 
 var _d3Shape = require("d3-shape");
@@ -145,38 +147,7 @@ function Branch(props) {
       alignmentBaseline: "middle",
       className: "rp-label"
     }) : null);
-  } // else if(target.data.attribute=== '0' && target.collapsed===false) {
-  //   return(
-  //     <g class ="internal-node" >
-  //       <path
-  //     className="rp-branch"
-  //     fill="none"
-  //     d={branch_line(data)}
-  //     {...all_branch_styles}
-  //     onMouseMove={props.tooltip ? e => {
-  //       setTooltip({
-  //         x: e.nativeEvent.offsetX,
-  //         y: e.nativeEvent.offsetY,
-  //         data: target.data
-  //       });
-  //     } : undefined}
-  //     onMouseOut={props.tooltip ? e => {
-  //       setTooltip(false);
-  //     } : undefined}
-  //     onClick={ (e)=>{
-  //       setIsOpen({
-  //         left: e.nativeEvent.offsetX+50,
-  //         top: e.nativeEvent.offsetY+80,
-  //         position: 'absolute',
-  //         display: 'block',
-  //         nodeC: target,
-  //       })
-  //     } }
-  //   />
-  //   </g>
-  //   )
-  // }
-  else if (target.hidden === true) return null;else {
+  } else if (target.hidden === true) return null;else {
     if (tree.isLeafNode(target)) {
       return /*#__PURE__*/_react.default.createElement("g", {
         className: "node"
@@ -223,7 +194,7 @@ function Branch(props) {
         alignmentBaseline: "middle"
       }, Object.assign({}, props.labelStyle, label_style), {
         className: "rp-label"
-      }), target.data.name.slice(0, props.maxLabelWidth)) : null);
+      }), target.data.name.split("/")[0].slice(0, props.maxLabelWidth)) : null);
     } else {
       return /*#__PURE__*/_react.default.createElement("g", {
         class: "internal-node"
@@ -258,11 +229,11 @@ function Branch(props) {
         textAnchor: "start",
         alignmentBaseline: "middle",
         className: "rp-label"
-      }, parseFloat(target.data.attribute).toFixed(4)) : null, (() => {
-        if (target.data.name === '__reroot_top_clade') {
+      }, target.data.attribute !== '0' ? parseFloat(target.data.attribute).toFixed(4) : null) : null, (() => {
+        if (target.data.name.includes('__reroot_top_clade')) {
           return null;
         } else {
-          if (!target.data.name) {
+          if (target.data.name.split("/")[0] === '' && target.data.name.split("/")[1] !== '') {
             return null;
           }
 

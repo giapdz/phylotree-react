@@ -165,47 +165,17 @@ function Phylotree(props) {
     return <g />;
   } else if(!tree) {
     tree = new phylotree(newick);
-
+    
     if( props.reroot) {
       placenodes(tree, props.internalNodeLabels, props.accessor, props.sort);
-      var r,
-      node_child = props.reroot.children,
-      node_name = props.reroot.data.name;
+      let node_name = props.reroot.data.name;
      
-        if(node_name!=='' && !node_child) {
-          r = tree.getNodeByName(node_name)
-        }
-        else if(node_child) {
-        for( let n of tree.getNodes()) {
-          if(!tree.isLeafNode(n) && (node_child[1].data.name==='__reroot_top_clade')) {
-            if(node_name === n.data.name && node_child[0].data.name===n.children[0].data.name 
-              ) {
-             r=n;
-          }
-          }
-          else if(!tree.isLeafNode(n) && (node_child[0].data.name==='__reroot_top_clade')) {
-            if(node_name === n.data.name && node_child[1].data.name===n.children[1].data.name 
-             ) {
-             r=n;
-          }
-          }
-          else if(!tree.isLeafNode(n))  {
-          if(node_name === n.data.name && (props.reroot.data.attribute===n.data.attribute || (node_child[0].data.name===n.children[0].data.name || node_child[1].data.name===n.children[1].data.name))
-            ) {
-           r=n;
-        }
-        // else if (node_name === n.data.name) r = n
-      }
-       
-      }
-      //  r= target_node(node_child,node_name,tree.nodes)
-      } 
+      let r = tree.getNodeByName(node_name)
+         
       let newick2 =tree.reroot(r,1).getNewick()
       tree = new phylotree(newick2);
     
-   
-      
-    console.log(tree)  
+   console.log(tree.getNewick())
     
   }
   if(props.collapsed) {
@@ -213,8 +183,8 @@ function Phylotree(props) {
     props.collapsed.forEach(function(node) {
           for( let n of tree.getNodes()) {
             if(!tree.isLeafNode(n)) {
-          if(node.data.name === n.data.name &&  node.data.attribute ===n.data.attribute && (node.children[0].data.name===n.children[0].data.name && node.children[1].data.name===n.children[1].data.name)
-              ) {
+          if(node.data.name === n.data.name )
+               {
            c.push(n);
               }
             }

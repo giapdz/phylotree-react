@@ -13,9 +13,9 @@ require("core-js/modules/es.regexp.to-string.js");
 
 require("core-js/modules/es.string.search.js");
 
-require("core-js/modules/web.dom-collections.iterator.js");
-
 require("core-js/modules/es.string.split.js");
+
+require("core-js/modules/web.dom-collections.iterator.js");
 
 require("core-js/modules/es.array.sort.js");
 
@@ -42,6 +42,8 @@ var _tooltip_container = _interopRequireDefault(require("./tooltip_container"));
 require("./styles/phylotree.css");
 
 require("bootstrap/dist/css/bootstrap.min.css");
+
+var _lodash = require("lodash");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -291,6 +293,19 @@ class PhylotreeApplication extends _react.Component {
       }, "Reroot on this node") : null);
     });
 
+    let new_wick = _props.newick;
+    let result = new_wick.split('');
+    let result2 = new_wick.split('');
+    let id = 0;
+
+    for (let i = 0; i < result.length; i++) {
+      if (result[i] === ':') {
+        result2.splice(i + id, 0, '/', id);
+        id += 2;
+      }
+    }
+
+    result = result2.join('');
     this.state = {
       tree: null,
       width: _props.width,
@@ -299,7 +314,7 @@ class PhylotreeApplication extends _react.Component {
       reroot: null,
       collapsed: [],
       internal: false,
-      newick: _props.newick,
+      newick: result,
       support: _props.support,
       round: _props.round,
       nodeName: '',
@@ -308,9 +323,25 @@ class PhylotreeApplication extends _react.Component {
     this.baseState = this.state;
   }
 
+  componentDidMount() {//  let new_wick = this.state.newick;
+    //  let result = new_wick.split('');
+    //  let result2= new_wick.split('');
+    //  let id=0;
+    //  for(let i = 0; i < result.length; i++) {
+    //    if(result[i]===':') {
+    //    result2.splice(i+id,0,'/', id)
+    //      id+=2;
+    //    }
+    //  }
+    //  result = result2.join('')
+    //  console.log(id)
+    //  console.log(result)
+    //  this.setState({newick: result})
+  }
+
   findValue(haystack, needle) {
     for (const item of haystack) {
-      if (item.unique_id === needle.unique_id) {
+      if (item.data.name === needle.data.name) {
         return true;
       }
     }
@@ -320,7 +351,7 @@ class PhylotreeApplication extends _react.Component {
 
   toggleCollapse(node) {
     if (this.findValue(this.state.collapsed, node)) {
-      const newCollapsed = this.state.collapsed.filter(element => element.unique_id !== node.unique_id);
+      const newCollapsed = this.state.collapsed.filter(element => element.data.name !== node.data.name);
       this.setState({
         collapsed: newCollapsed
       });

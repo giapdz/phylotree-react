@@ -12,6 +12,7 @@ import Phylotree from "./phylotree";
 import TooltipContainer from "./tooltip_container";
 import "./styles/phylotree.css"
 import "bootstrap/dist/css/bootstrap.min.css";
+import { replace } from "lodash";
 const saveSvgAsPng = require('save-svg-as-png')
 
 const imageOptions = {
@@ -160,6 +161,17 @@ function TooltipContents(props) {
 class PhylotreeApplication extends Component {
   constructor(props) {
     super(props);
+    let new_wick = props.newick;
+   let result = new_wick.split('');
+   let result2= new_wick.split('');
+   let id=0;
+   for(let i = 0; i < result.length; i++) {
+     if(result[i]===':') {
+     result2.splice(i+id,0,'/', id)
+       id+=2;
+     }
+   }
+   result = result2.join('')
     this.state = {
       tree: null,
       width: props.width,
@@ -168,7 +180,7 @@ class PhylotreeApplication extends Component {
       reroot:null,
       collapsed:[],
       internal: false,
-      newick: props.newick,
+      newick: result,
       support: props.support,
       round: props.round,
       nodeName:'',
@@ -177,7 +189,23 @@ class PhylotreeApplication extends Component {
     this.baseState = this.state;
     
   }
- 
+ componentDidMount() {
+  //  let new_wick = this.state.newick;
+  //  let result = new_wick.split('');
+  //  let result2= new_wick.split('');
+  //  let id=0;
+  //  for(let i = 0; i < result.length; i++) {
+  //    if(result[i]===':') {
+  //    result2.splice(i+id,0,'/', id)
+  //      id+=2;
+  //    }
+  //  }
+  //  result = result2.join('')
+  //  console.log(id)
+  //  console.log(result)
+  //  this.setState({newick: result})
+   
+ }
   
   toggleDimension =(dimension, direction) => {
     const new_dimension = this.state[dimension] +
@@ -198,7 +226,7 @@ class PhylotreeApplication extends Component {
   }
   findValue(haystack,needle) {
     for(const item of haystack) {
-       if(item.unique_id === needle.unique_id ) {
+       if(item.data.name === needle.data.name) {
           return true;
        }
     }
@@ -207,7 +235,7 @@ class PhylotreeApplication extends Component {
   toggleCollapse(node) {
     
     if (this.findValue(this.state.collapsed,node)) {
-      const newCollapsed = this.state.collapsed.filter(element => ( element.unique_id !== node.unique_id ));
+      const newCollapsed = this.state.collapsed.filter(element => ( element.data.name !== node.data.name));
         this.setState({ collapsed: newCollapsed });
       
     } else if(!this.findValue(this.state.collapsed,node) || this.state.collapsed===[]) {
