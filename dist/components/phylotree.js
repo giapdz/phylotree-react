@@ -14,23 +14,23 @@ require("core-js/modules/web.dom-collections.iterator.js");
 
 require("core-js/modules/es.array.sort.js");
 
-var _react = _interopRequireWildcard(require("react"));
-
-var _phylotree = require("phylotree");
+var _d3Array = require("d3-array");
 
 var _d3Scale = require("d3-scale");
 
 var _d3ScaleChromatic = require("d3-scale-chromatic");
 
-var _underscore = _interopRequireDefault(require("underscore"));
+var _phylotree = require("phylotree");
 
-var _d3Array = require("d3-array");
+var _react = _interopRequireWildcard(require("react"));
+
+var _underscore = _interopRequireDefault(require("underscore"));
 
 var _branch = _interopRequireDefault(require("./branch"));
 
-var _text_width = _interopRequireDefault(require("./text_width"));
-
 var _svg = _interopRequireDefault(require("./svg"));
+
+var _text_width = _interopRequireDefault(require("./text_width"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -314,9 +314,9 @@ function Phylotree(props) {
   }), tooltip ? /*#__PURE__*/_react.default.createElement(props.tooltip, _extends({
     width: props.width,
     height: props.height
-  }, tooltip)) : null)), /*#__PURE__*/_react.default.createElement("div", {
+  }, tooltip)) : null, " ")), /*#__PURE__*/_react.default.createElement("div", {
     ref: container
-  }, isOpen ? /*#__PURE__*/_react.default.createElement(props.isOpen, isOpen) : null));
+  }, isOpen ? /*#__PURE__*/_react.default.createElement(props.isOpen, isOpen) : null, " "));
 }
 
 Phylotree.defaultProps = {

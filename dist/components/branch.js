@@ -17,11 +17,11 @@ require("core-js/modules/es.string.split.js");
 
 require("core-js/modules/es.string.includes.js");
 
-var _react = _interopRequireDefault(require("react"));
+require("bootstrap/dist/css/bootstrap.min.css");
 
 var _d3Shape = require("d3-shape");
 
-require("bootstrap/dist/css/bootstrap.min.css");
+var _react = _interopRequireDefault(require("react"));
 
 require("./styles/phylotree.css");
 
@@ -72,7 +72,7 @@ function Branch(props) {
   } : {},
         all_branch_styles = Object.assign({}, props.branchStyle, computed_branch_styles),
         label_style = target.data.name && props.labelStyler ? props.labelStyler(target.data) : {};
-  if (target.hidden === true && target.collapsed === false && target.parent.hidden === true) return null;else if (target.hidden === true && target.collapsed === false && target.data.attribute !== '0') {
+  if (target.hidden === true && target.collapsed === false && target.parent.hidden === true) return null;else if (target.hidden === true && target.collapsed === false && target.data.attribute !== "0") {
     return /*#__PURE__*/_react.default.createElement("g", {
       class: "internal-node"
     }, /*#__PURE__*/_react.default.createElement("path", _extends({
@@ -94,8 +94,8 @@ function Branch(props) {
         setIsOpen({
           left: e.nativeEvent.offsetX + 50,
           top: e.nativeEvent.offsetY + 80,
-          position: 'absolute',
-          display: 'block',
+          position: "absolute",
+          display: "block",
           node: target,
           nodeC: target
         });
@@ -110,7 +110,7 @@ function Branch(props) {
       alignmentBaseline: "middle",
       className: "rp-label"
     }, parseFloat(target.data.attribute).toFixed(4)) : null);
-  } else if (target.hidden === true && target.collapsed === false && target.data.attribute === '0') {
+  } else if (target.hidden === true && target.collapsed === false && target.data.attribute === "0") {
     return /*#__PURE__*/_react.default.createElement("g", {
       class: "internal-node"
     }, /*#__PURE__*/_react.default.createElement("path", _extends({
@@ -132,8 +132,8 @@ function Branch(props) {
         setIsOpen({
           left: e.nativeEvent.offsetX + 50,
           top: e.nativeEvent.offsetY + 80,
-          position: 'absolute',
-          display: 'block',
+          position: "absolute",
+          display: "block",
           nodeC: target
         });
       }
@@ -170,8 +170,8 @@ function Branch(props) {
           setIsOpen({
             left: e.nativeEvent.offsetX + 120,
             top: e.nativeEvent.offsetY + 120,
-            position: 'absolute',
-            display: 'block',
+            position: "absolute",
+            display: "block",
             node: target
           });
         } : undefined
@@ -217,9 +217,9 @@ function Branch(props) {
           setIsOpen({
             left: e.nativeEvent.offsetX + 50,
             top: e.nativeEvent.offsetY + 80,
-            position: 'absolute',
-            display: 'block',
-            node: target.data.attribute === '0' ? null : target,
+            position: "absolute",
+            display: "block",
+            node: target.data.attribute === "0" ? null : target,
             nodeC: target
           });
         }
@@ -229,11 +229,11 @@ function Branch(props) {
         textAnchor: "start",
         alignmentBaseline: "middle",
         className: "rp-label"
-      }, target.data.attribute !== '0' ? parseFloat(target.data.attribute).toFixed(4) : null) : null, (() => {
-        if (target.data.name.includes('__reroot_top_clade')) {
+      }, target.data.attribute !== "0" ? parseFloat(target.data.attribute).toFixed(4) : null) : null, (() => {
+        if (target.data.name.includes("__reroot_top_clade")) {
           return null;
         } else {
-          if (target.data.name.split("/")[0] === '' && target.data.name.split("/")[1] !== '') {
+          if (target.data.name.split("/")[0] === "" && target.data.name.split("/")[1] !== "") {
             return null;
           }
 

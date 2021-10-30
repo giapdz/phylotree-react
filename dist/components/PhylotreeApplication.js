@@ -21,29 +21,27 @@ require("core-js/modules/es.array.sort.js");
 
 require("core-js/modules/es.object.assign.js");
 
+var _freeSolidSvgIcons = require("@fortawesome/free-solid-svg-icons");
+
+var _reactFontawesome = require("@fortawesome/react-fontawesome");
+
+require("bootstrap/dist/css/bootstrap.min.css");
+
 var _react = _interopRequireWildcard(require("react"));
 
 var _Button = _interopRequireDefault(require("react-bootstrap/Button"));
 
 var _ButtonGroup = _interopRequireDefault(require("react-bootstrap/ButtonGroup"));
 
-var _reactFontawesome = require("@fortawesome/react-fontawesome");
-
-var _freeSolidSvgIcons = require("@fortawesome/free-solid-svg-icons");
-
-var _show_label = _interopRequireDefault(require("./styles/show_label.png"));
+var _phylotree = _interopRequireDefault(require("./phylotree"));
 
 var _icon_length = _interopRequireDefault(require("./styles/icon_length.png"));
 
-var _phylotree = _interopRequireDefault(require("./phylotree"));
-
-var _tooltip_container = _interopRequireDefault(require("./tooltip_container"));
-
 require("./styles/phylotree.css");
 
-require("bootstrap/dist/css/bootstrap.min.css");
+var _show_label = _interopRequireDefault(require("./styles/show_label.png"));
 
-var _lodash = require("lodash");
+var _tooltip_container = _interopRequireDefault(require("./tooltip_container"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -59,12 +57,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
-const saveSvgAsPng = require('save-svg-as-png');
+const saveSvgAsPng = require("save-svg-as-png");
 
 const imageOptions = {
   scale: 5,
   encoderOptions: 1,
-  backgroundColor: 'white'
+  backgroundColor: "white"
 };
 
 function Reload(props) {
@@ -221,7 +219,7 @@ function TooltipContents(props) {
     y: 15,
     fill: "cadetblue",
     textAnchor: "middle"
-  }, "Length:  ", props.data.attribute));
+  }, "Length: ", props.data.attribute, " "));
 }
 
 class PhylotreeApplication extends _react.Component {
@@ -255,10 +253,10 @@ class PhylotreeApplication extends _react.Component {
 
     _defineProperty(this, "labelStyler", branch => {
       var rx = new RegExp(this.state.nodeName, "i");
-      const identifier = branch.name.search(rx);
+      const identifier = branch.name.split("/")[0].search(rx);
 
-      if (this.state.nodeName !== '') {
-        const fill = identifier !== -1 ? 'red' : 'black';
+      if (this.state.nodeName !== "") {
+        const fill = identifier !== -1 ? "red" : "black";
         return {
           fill
         };
@@ -266,7 +264,7 @@ class PhylotreeApplication extends _react.Component {
     });
 
     _defineProperty(this, "handleClick", () => {
-      saveSvgAsPng.saveSvgAsPng(document.getElementById('svg-chart'), 'shapes.png', imageOptions);
+      saveSvgAsPng.saveSvgAsPng(document.getElementById("svg-chart"), "shapes.png", imageOptions);
     });
 
     _defineProperty(this, "openDropdown", props => {
@@ -274,13 +272,13 @@ class PhylotreeApplication extends _react.Component {
         class: "dropdown-menu",
         role: "menu",
         style: _objectSpread({}, props)
-      }, " ", props.nodeC ? /*#__PURE__*/_react.default.createElement("a", {
+      }, props.nodeC ? /*#__PURE__*/_react.default.createElement("a", {
         class: "dropdown-item",
         tabindex: "-1",
         onClick: () => {
           this.toggleCollapse(props.nodeC);
         }
-      }, this.findValue(this.state.collapsed, props.nodeC) ? 'Expand Subtree' : 'Collapse Subtree') : null, props.nodeC && props.node ? /*#__PURE__*/_react.default.createElement("div", {
+      }, this.findValue(this.state.collapsed, props.nodeC) ? "Expand Subtree" : "Collapse Subtree") : null, props.nodeC && props.node ? /*#__PURE__*/_react.default.createElement("div", {
         class: "dropdown-divider"
       }) : null, props.node ? /*#__PURE__*/_react.default.createElement("a", {
         class: "dropdown-item",
@@ -290,22 +288,22 @@ class PhylotreeApplication extends _react.Component {
             reroot: props.node
           });
         }
-      }, "Reroot on this node") : null);
+      }, "Reroot on this node") : null, " ");
     });
 
     let new_wick = _props.newick;
-    let result = new_wick.split('');
-    let result2 = new_wick.split('');
+    let result = new_wick.split("");
+    let result2 = new_wick.split("");
     let id = 0;
 
     for (let i = 0; i < result.length; i++) {
-      if (result[i] === ':') {
-        result2.splice(i + id, 0, '/', id);
+      if (result[i] === ":") {
+        result2.splice(i + id, 0, "/", id);
         id += 2;
       }
     }
 
-    result = result2.join('');
+    result = result2.join("");
     this.state = {
       tree: null,
       width: _props.width,
@@ -317,26 +315,10 @@ class PhylotreeApplication extends _react.Component {
       newick: result,
       support: _props.support,
       round: _props.round,
-      nodeName: '',
+      nodeName: "",
       showlabel: true
     };
     this.baseState = this.state;
-  }
-
-  componentDidMount() {//  let new_wick = this.state.newick;
-    //  let result = new_wick.split('');
-    //  let result2= new_wick.split('');
-    //  let id=0;
-    //  for(let i = 0; i < result.length; i++) {
-    //    if(result[i]===':') {
-    //    result2.splice(i+id,0,'/', id)
-    //      id+=2;
-    //    }
-    //  }
-    //  result = result2.join('')
-    //  console.log(id)
-    //  console.log(result)
-    //  this.setState({newick: result})
   }
 
   findValue(haystack, needle) {
@@ -443,7 +425,7 @@ class PhylotreeApplication extends _react.Component {
       style: {
         width: 470
       }
-    }, this.state.support.split('/')[0] ? /*#__PURE__*/_react.default.createElement("div", {
+    }, this.state.support.split("/")[0] ? /*#__PURE__*/_react.default.createElement("div", {
       class: "col"
     }, /*#__PURE__*/_react.default.createElement("input", {
       type: "checkbox",
@@ -453,7 +435,7 @@ class PhylotreeApplication extends _react.Component {
       style: {
         marginRight: 5
       }
-    }), /*#__PURE__*/_react.default.createElement("text", null, this.state.value1 ? 'Hide' : 'Show', " ", this.state.support.split('/')[0])) : null, this.state.support.split('/')[1] ? /*#__PURE__*/_react.default.createElement("div", {
+    }), /*#__PURE__*/_react.default.createElement("text", null, this.state.value1 ? "Hide " : "Show ", this.state.support.split("/")[0])) : null, this.state.support.split("/")[1] ? /*#__PURE__*/_react.default.createElement("div", {
       class: "col"
     }, /*#__PURE__*/_react.default.createElement("input", {
       type: "checkbox",
@@ -463,7 +445,7 @@ class PhylotreeApplication extends _react.Component {
       style: {
         marginRight: 5
       }
-    }), /*#__PURE__*/_react.default.createElement("text", null, this.state.value2 ? 'Hide' : 'Show', " ", this.state.support.split('/')[1])) : null, this.state.support.split('/')[2] ? /*#__PURE__*/_react.default.createElement("div", {
+    }), /*#__PURE__*/_react.default.createElement("text", null, this.state.value2 ? "Hide " : "Show ", this.state.support.split("/")[1])) : null, this.state.support.split("/")[2] ? /*#__PURE__*/_react.default.createElement("div", {
       class: "col"
     }, /*#__PURE__*/_react.default.createElement("input", {
       type: "checkbox",
@@ -473,7 +455,7 @@ class PhylotreeApplication extends _react.Component {
       style: {
         marginRight: 5
       }
-    }), /*#__PURE__*/_react.default.createElement("text", null, this.state.value3 ? 'Hide' : 'Show', " ", this.state.support.split('/')[2])) : null, this.state.support.split('/')[3] ? /*#__PURE__*/_react.default.createElement("div", {
+    }), /*#__PURE__*/_react.default.createElement("text", null, this.state.value3 ? "Hide " : "Show ", this.state.support.split("/")[2])) : null, this.state.support.split("/")[3] ? /*#__PURE__*/_react.default.createElement("div", {
       class: "col"
     }, /*#__PURE__*/_react.default.createElement("input", {
       type: "checkbox",
@@ -483,7 +465,7 @@ class PhylotreeApplication extends _react.Component {
       style: {
         marginRight: 5
       }
-    }), /*#__PURE__*/_react.default.createElement("text", null, this.state.value4 ? 'Hide' : 'Show', " ", this.state.support.split('/')[3])) : null, this.state.support.split('/')[4] ? /*#__PURE__*/_react.default.createElement("div", {
+    }), /*#__PURE__*/_react.default.createElement("text", null, this.state.value4 ? "Hide " : "Show ", this.state.support.split("/")[3])) : null, this.state.support.split("/")[4] ? /*#__PURE__*/_react.default.createElement("div", {
       class: "col"
     }, /*#__PURE__*/_react.default.createElement("input", {
       type: "checkbox",
@@ -493,7 +475,7 @@ class PhylotreeApplication extends _react.Component {
       style: {
         marginRight: 5
       }
-    }), /*#__PURE__*/_react.default.createElement("text", null, this.state.value5 ? 'Hide' : 'Show', " ", this.state.support.split('/')[4])) : null))), /*#__PURE__*/_react.default.createElement(_phylotree.default, {
+    }), /*#__PURE__*/_react.default.createElement("text", null, this.state.value5 ? "Hide " : "Show ", this.state.support.split("/")[4])) : null, " "))), /*#__PURE__*/_react.default.createElement(_phylotree.default, {
       width: width,
       height: height,
       transform: "translate(".concat(padding, ", ").concat(padding, ")"),
@@ -510,11 +492,11 @@ class PhylotreeApplication extends _react.Component {
       showValue3: this.state.value3,
       showValue4: this.state.value4,
       showValue5: this.state.value5,
-      round1: this.state.round.split(',')[0],
-      round2: this.state.round.split(',')[1],
-      round3: this.state.round.split(',')[2],
-      round4: this.state.round.split(',')[3],
-      round5: this.state.round.split(',')[4],
+      round1: this.state.round.split(",")[0],
+      round2: this.state.round.split(",")[1],
+      round3: this.state.round.split(",")[2],
+      round4: this.state.round.split(",")[3],
+      round5: this.state.round.split(",")[4],
       tooltip: TooltipContents,
       isOpen: this.openDropdown,
       includeBLAxis: true
