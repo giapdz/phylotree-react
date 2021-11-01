@@ -15,6 +15,8 @@ require("core-js/modules/es.string.search.js");
 
 require("core-js/modules/es.string.split.js");
 
+require("core-js/modules/es.string.replace.js");
+
 require("core-js/modules/web.dom-collections.iterator.js");
 
 require("core-js/modules/es.array.sort.js");
@@ -27,13 +29,19 @@ var _reactFontawesome = require("@fortawesome/react-fontawesome");
 
 require("bootstrap/dist/css/bootstrap.min.css");
 
+var _fileSaver = _interopRequireDefault(require("file-saver"));
+
+var _phylotree = require("phylotree");
+
 var _react = _interopRequireWildcard(require("react"));
 
 var _Button = _interopRequireDefault(require("react-bootstrap/Button"));
 
 var _ButtonGroup = _interopRequireDefault(require("react-bootstrap/ButtonGroup"));
 
-var _phylotree = _interopRequireDefault(require("./phylotree"));
+var _saveSvgAsPng = _interopRequireDefault(require("save-svg-as-png"));
+
+var _phylotree2 = _interopRequireDefault(require("./phylotree"));
 
 var _icon_length = _interopRequireDefault(require("./styles/icon_length.png"));
 
@@ -43,11 +51,11 @@ var _show_label = _interopRequireDefault(require("./styles/show_label.png"));
 
 var _tooltip_container = _interopRequireDefault(require("./tooltip_container"));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
@@ -56,8 +64,6 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
-
-const saveSvgAsPng = require("save-svg-as-png");
 
 const imageOptions = {
   scale: 5,
@@ -204,6 +210,17 @@ function DownloadImagetButton(props) {
   }));
 }
 
+function SaveNewickButton(props) {
+  return /*#__PURE__*/_react.default.createElement(_Button.default, _extends({
+    title: "Export to Newick",
+    variant: "secondary"
+  }, props), /*#__PURE__*/_react.default.createElement(_reactFontawesome.FontAwesomeIcon, {
+    key: 1,
+    icon: _freeSolidSvgIcons.faFileExport,
+    flip: "vertical"
+  }));
+}
+
 function TooltipContents(props) {
   return /*#__PURE__*/_react.default.createElement(_tooltip_container.default, _extends({
     tooltip_width: 10,
@@ -264,7 +281,29 @@ class PhylotreeApplication extends _react.Component {
     });
 
     _defineProperty(this, "handleClick", () => {
-      saveSvgAsPng.saveSvgAsPng(document.getElementById("svg-chart"), "shapes.png", imageOptions);
+      _saveSvgAsPng.default.saveSvgAsPng(document.getElementById("svg-chart"), "shapes.png", imageOptions);
+    });
+
+    _defineProperty(this, "exportNewick", () => {
+      let pattern = /\/+[0-9]+:/g;
+      let result = this.state.newick.replace(pattern, ":");
+      console.log(result);
+      var blob = new Blob([result], {
+        type: "text/plain;charset=utf-8"
+      });
+
+      _fileSaver.default.saveAs(blob, "newick.treefile");
+    });
+
+    _defineProperty(this, "reRoot", node => {
+      let pattern = /__reroot_top_clade/g;
+      let tree = new _phylotree.phylotree(this.state.newick);
+      let r = tree.getNodeByName(node.data.name);
+      let result = tree.reroot(r).getNewick().replace(pattern, "");
+      this.setState({
+        newick: result,
+        reroot: node
+      });
     });
 
     _defineProperty(this, "openDropdown", props => {
@@ -284,26 +323,26 @@ class PhylotreeApplication extends _react.Component {
         class: "dropdown-item",
         tabindex: "-1",
         onClick: () => {
-          this.setState({
-            reroot: props.node
-          });
+          this.reRoot(props.node);
         }
       }, "Reroot on this node") : null, " ");
     });
 
     let new_wick = _props.newick;
-    let result = new_wick.split("");
+
+    let _result = new_wick.split("");
+
     let result2 = new_wick.split("");
     let id = 0;
 
-    for (let i = 0; i < result.length; i++) {
-      if (result[i] === ":") {
+    for (let i = 0; i < _result.length; i++) {
+      if (_result[i] === ":") {
         result2.splice(i + id, 0, "/", id);
         id += 2;
       }
     }
 
-    result = result2.join("");
+    _result = result2.join("");
     this.state = {
       tree: null,
       width: _props.width,
@@ -312,11 +351,12 @@ class PhylotreeApplication extends _react.Component {
       reroot: null,
       collapsed: [],
       internal: false,
-      newick: result,
+      newick: _result,
       support: _props.support,
       round: _props.round,
       nodeName: "",
-      showlabel: true
+      showlabel: true,
+      getNewick: false
     };
     this.baseState = this.state;
   }
@@ -404,7 +444,9 @@ class PhylotreeApplication extends _react.Component {
     }, /*#__PURE__*/_react.default.createElement("img", {
       src: _icon_length.default,
       width: "20"
-    })), /*#__PURE__*/_react.default.createElement(DownloadImagetButton, {
+    })), /*#__PURE__*/_react.default.createElement(SaveNewickButton, {
+      onClick: this.exportNewick
+    }), /*#__PURE__*/_react.default.createElement(DownloadImagetButton, {
       onClick: this.handleClick
     })), /*#__PURE__*/_react.default.createElement("form", {
       style: {
@@ -475,7 +517,7 @@ class PhylotreeApplication extends _react.Component {
       style: {
         marginRight: 5
       }
-    }), /*#__PURE__*/_react.default.createElement("text", null, this.state.value5 ? "Hide " : "Show ", this.state.support.split("/")[4])) : null, " "))), /*#__PURE__*/_react.default.createElement(_phylotree.default, {
+    }), /*#__PURE__*/_react.default.createElement("text", null, this.state.value5 ? "Hide " : "Show ", this.state.support.split("/")[4])) : null, " "))), /*#__PURE__*/_react.default.createElement(_phylotree2.default, {
       width: width,
       height: height,
       transform: "translate(".concat(padding, ", ").concat(padding, ")"),
@@ -484,6 +526,7 @@ class PhylotreeApplication extends _react.Component {
       alignTips: this.state.alignTips,
       sort: this.state.sort,
       reroot: this.state.reroot,
+      getNewick: this.state.getNewick,
       collapsed: this.state.collapsed,
       showAttributes: this.state.attribute,
       showLabels: this.state.showlabel,

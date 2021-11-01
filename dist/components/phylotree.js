@@ -209,15 +209,6 @@ function Phylotree(props) {
   } else if (!tree) {
     tree = new _phylotree.phylotree(newick);
 
-    if (props.reroot) {
-      placenodes(tree, props.internalNodeLabels, props.accessor, props.sort);
-      let node_name = props.reroot.data.name;
-      let r = tree.getNodeByName(node_name);
-      let newick2 = tree.reroot(r, 1).getNewick();
-      tree = new _phylotree.phylotree(newick2);
-      console.log(tree.getNewick());
-    }
-
     if (props.collapsed) {
       const c = [];
       props.collapsed.forEach(function (node) {
@@ -231,6 +222,10 @@ function Phylotree(props) {
       });
       toggleCollapse(tree, c);
       placenodes(tree, props.internalNodeLabels, props.accessor, props.sort, c);
+    }
+
+    if (!props.skipPlacement) {
+      placenodes(tree, props.internalNodeLabels, props.accessor, props.sort);
     }
   }
 
@@ -328,9 +323,6 @@ Phylotree.defaultProps = {
   branchStyler: null,
   labelStyler: null,
   tooltip: null,
-  sort: null,
-  reroot: null,
-  collapsed: null,
   includeBLAxis: false
 };
 var _default = Phylotree;

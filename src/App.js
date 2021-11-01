@@ -12,9 +12,9 @@ function App() {
     return (
         <PhylotreeApplication
             newick={newick}
-            width={500}
-            height={500}
-            round={"-1,-1,-1,-1,-1"}
+            width={600}
+            height={600}
+            round={"0,0,0,0,0"}
         />
     );
 }

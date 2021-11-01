@@ -38,6 +38,7 @@ function sort_nodes(tree, direction) {
         return (a["count_depth"] - b["count_depth"]) * (asc ? 1 : -1);
     });
 }
+
 function toggleCollapse(tree, nodes) {
     nodes.map(function (node) {
         if (node.collapsed) {
@@ -151,7 +152,6 @@ function Phylotree(props) {
     const { width, height, maxLabelWidth } = props;
     const [isOpen, setIsOpen] = useState(false);
     const container = useRef();
-
     useEffect(() => {
         setIsOpen(false);
 
@@ -172,22 +172,6 @@ function Phylotree(props) {
     } else if (!tree) {
         tree = new phylotree(newick);
 
-        if (props.reroot) {
-            placenodes(
-                tree,
-                props.internalNodeLabels,
-                props.accessor,
-                props.sort
-            );
-            let node_name = props.reroot.data.name;
-
-            let r = tree.getNodeByName(node_name);
-
-            let newick2 = tree.reroot(r, 1).getNewick();
-            tree = new phylotree(newick2);
-
-            console.log(tree.getNewick());
-        }
         if (props.collapsed) {
             const c = [];
             props.collapsed.forEach(function (node) {
@@ -206,6 +190,14 @@ function Phylotree(props) {
                 props.accessor,
                 props.sort,
                 c
+            );
+        }
+        if (!props.skipPlacement) {
+            placenodes(
+                tree,
+                props.internalNodeLabels,
+                props.accessor,
+                props.sort
             );
         }
     }
@@ -334,9 +326,6 @@ Phylotree.defaultProps = {
     branchStyler: null,
     labelStyler: null,
     tooltip: null,
-    sort: null,
-    reroot: null,
-    collapsed: null,
     includeBLAxis: false,
 };
 

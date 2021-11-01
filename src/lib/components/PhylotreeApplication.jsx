@@ -5,22 +5,24 @@ import {
     faArrowLeft,
     faArrowRight,
     faArrowUp,
+    faFileExport,
     faImage,
     faRedo,
     faSortAmountUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "bootstrap/dist/css/bootstrap.min.css";
+import FileSaver from "file-saver";
+import { phylotree } from "phylotree";
 import React, { Component } from "react";
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
+import saveSvgAsPng from "save-svg-as-png";
 import Phylotree from "./phylotree";
 import showLength from "./styles/icon_length.png";
 import "./styles/phylotree.css";
 import showLabel from "./styles/show_label.png";
 import TooltipContainer from "./tooltip_container";
-const saveSvgAsPng = require("save-svg-as-png");
-
 const imageOptions = {
     scale: 5,
     encoderOptions: 1,
@@ -134,7 +136,13 @@ function DownloadImagetButton(props) {
         </Button>
     );
 }
-
+function SaveNewickButton(props) {
+    return (
+        <Button title="Export to Newick" variant="secondary" {...props}>
+            <FontAwesomeIcon key={1} icon={faFileExport} flip="vertical" />
+        </Button>
+    );
+}
 function TooltipContents(props) {
     return (
         <TooltipContainer tooltip_width={10} tooltip_height={50} {...props}>
@@ -173,6 +181,7 @@ class PhylotreeApplication extends Component {
             round: props.round,
             nodeName: "",
             showlabel: true,
+            getNewick: false,
         };
         this.baseState = this.state;
     }
@@ -233,6 +242,22 @@ class PhylotreeApplication extends Component {
             imageOptions
         );
     };
+    exportNewick = () => {
+        let pattern = /\/+[0-9]+:/g;
+        let result = this.state.newick.replace(pattern, ":");
+        console.log(result);
+        var blob = new Blob([result], {
+            type: "text/plain;charset=utf-8",
+        });
+        FileSaver.saveAs(blob, "newick.treefile");
+    };
+    reRoot = (node) => {
+        let pattern = /__reroot_top_clade/g;
+        let tree = new phylotree(this.state.newick);
+        let r = tree.getNodeByName(node.data.name);
+        let result = tree.reroot(r).getNewick().replace(pattern, "");
+        this.setState({ newick: result, reroot: node });
+    };
     openDropdown = (props) => {
         return (
             <div
@@ -263,7 +288,7 @@ class PhylotreeApplication extends Component {
                         class="dropdown-item"
                         tabindex="-1"
                         onClick={() => {
-                            this.setState({ reroot: props.node });
+                            this.reRoot(props.node);
                         }}
                     >
                         Reroot on this node
@@ -344,6 +369,7 @@ class PhylotreeApplication extends Component {
                             >
                                 <img src={showLength} width="20" />
                             </Button>
+                            <SaveNewickButton onClick={this.exportNewick} />
                             <DownloadImagetButton onClick={this.handleClick} />
                         </ButtonGroup>
 
@@ -466,6 +492,7 @@ class PhylotreeApplication extends Component {
                     alignTips={this.state.alignTips}
                     sort={this.state.sort}
                     reroot={this.state.reroot}
+                    getNewick={this.state.getNewick}
                     collapsed={this.state.collapsed}
                     showAttributes={this.state.attribute}
                     showLabels={this.state.showlabel}
