@@ -208,6 +208,7 @@ function Phylotree(props) {
     return /*#__PURE__*/_react.default.createElement("g", null);
   } else if (!tree) {
     tree = new _phylotree.phylotree(newick);
+    console.log(tree.getNewick());
 
     if (props.collapsed) {
       const c = [];

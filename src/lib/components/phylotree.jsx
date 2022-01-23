@@ -171,7 +171,7 @@ function Phylotree(props) {
         return <g />;
     } else if (!tree) {
         tree = new phylotree(newick);
-
+        console.log(tree.getNewick());
         if (props.collapsed) {
             const c = [];
             props.collapsed.forEach(function (node) {

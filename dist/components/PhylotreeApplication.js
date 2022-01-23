@@ -355,10 +355,36 @@ class PhylotreeApplication extends _react.Component {
       support: _props.support,
       round: _props.round,
       nodeName: "",
-      showlabel: true,
-      getNewick: false
+      showlabel: true
     };
     this.baseState = this.state;
+  } // static getDerivedStateFromProps(nextProps, prevState) {
+  //     if (nextProps.newick !== prevState.newick) {
+  //         return { newick: nextProps.newick };
+  //     }
+  //     return null;
+  // }
+
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.newick !== this.props.newick) {
+      let new_wick = this.props.newick;
+      let result = new_wick.split("");
+      let result2 = new_wick.split("");
+      let id = 0;
+
+      for (let i = 0; i < result.length; i++) {
+        if (result[i] === ":") {
+          result2.splice(i + id, 0, "/", id);
+          id += 2;
+        }
+      }
+
+      result = result2.join("");
+      this.setState({
+        newick: result
+      });
+    }
   }
 
   findValue(haystack, needle) {
